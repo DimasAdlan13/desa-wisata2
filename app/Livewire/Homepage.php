@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Content;
+use App\Models\Rating;
+use App\Models\Service;
+use App\Models\ServiceCategory;
+use Livewire\Component;
+
+class Homepage extends Component
+{
+    public function render()
+    {
+        $featuredServices = Service::public()
+            ->with(['category', 'primaryPhoto', 'ratings'])
+            ->withCount('bookings')
+            ->orderByDesc('bookings_count')
+            ->take(6)
+            ->get();
+
+        $categories = ServiceCategory::active()->withCount(['services' => fn($q) => $q->approved()->active()])->get();
+
+        $latestContents = Content::published()->latest()->take(3)->get();
+
+        $stats = [
+            'total_services'  => Service::public()->count(),
+            'total_bookings'  => \App\Models\Booking::where('status', 'completed')->count(),
+            'avg_rating'      => round(Rating::avg('rating') ?? 0, 1),
+            'total_wisatawan' => \App\Models\User::where('role', 'wisatawan')->count(),
+        ];
+
+        return view('livewire.homepage', compact('featuredServices', 'categories', 'latestContents', 'stats'))
+            ->layout('layouts.app');
+    }
+}
