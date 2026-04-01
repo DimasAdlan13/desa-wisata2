@@ -74,7 +74,7 @@
                    class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all group">
                     <div class="h-48 bg-teal-100 overflow-hidden">
                         @if($service->primaryPhoto)
-                            <img src="{{ Storage::url($service->primaryPhoto->photo_path) }}"
+                            <img src="{{ Storage::url($service->primaryPhoto->photo_path) }}" loading="lazy"
                                  alt="{{ $service->name }}"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         @else
@@ -106,7 +106,7 @@
                class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all group">
                 @if($content->cover_image)
                     <div class="h-40 overflow-hidden">
-                        <img src="{{ Storage::url($content->cover_image) }}" alt="{{ $content->title }}"
+                        <img src="{{ Storage::url($content->cover_image) }}" loading="lazy" alt="{{ $content->title }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                 @endif
