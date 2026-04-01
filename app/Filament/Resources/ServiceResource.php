@@ -27,7 +27,9 @@ class ServiceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Info Layanan')->schema([
+            Forms\Components\Section::make('Info Layanan Wisata')
+                ->description('Data ini akan tampil secara publik di katalog wisatawan.')
+                ->schema([
                 Forms\Components\TextInput::make('name')
                     ->label('Nama Layanan')
                     ->required()
@@ -61,8 +63,12 @@ class ServiceResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(10),
-                Forms\Components\TextInput::make('location')->label('Lokasi'),
-                Forms\Components\TextInput::make('contact_person')->label('Kontak Person'),
+                Forms\Components\TextInput::make('location')
+                    ->label('Titik Lokasi / Meeting Point')
+                    ->helperText('Titik kumpul atau lokasi tempat layanan berlangsung. Contoh: Dermaga Pulau Pramuka'),
+                Forms\Components\TextInput::make('contact_person')
+                    ->label('Nomor WA yang Bisa Dihubungi Wisatawan')
+                    ->helperText('Nomor ini akan ditampilkan ke wisatawan untuk menghubungi pengelola'),
                 Forms\Components\RichEditor::make('description')
                     ->label('Deskripsi')
                     ->columnSpanFull(),

@@ -18,6 +18,9 @@ class ApprovalService
             'approved_at' => now(),
         ]);
 
+        // Notify the admin_layanan by email
+        $user->notify(new \App\Notifications\AdminApprovedNotification());
+
         return $user->fresh();
     }
 

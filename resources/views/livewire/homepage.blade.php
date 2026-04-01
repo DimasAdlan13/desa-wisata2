@@ -120,4 +120,52 @@
         </div>
     </section>
     @endif
+
+    <!-- Menjadi Mitra Section -->
+    <section class="bg-gradient-to-br from-teal-700 to-blue-800 py-20 text-white">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <span class="bg-yellow-400 text-teal-900 text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">Peluang Usaha</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold mt-4 mb-4">
+                Ingin Menjadi <span class="text-yellow-300">Mitra Wisata</span> Kami?
+            </h2>
+            <p class="text-teal-100 text-lg mb-12 max-w-2xl mx-auto">
+                Daftarkan usaha wisata Anda dan jangkau lebih banyak wisatawan dari seluruh Indonesia melalui platform digital Desa Wisata Kepulauan Seribu.
+            </p>
+
+            <!-- Steps -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
+                    <div class="text-4xl mb-3">📝</div>
+                    <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 1</div>
+                    <h3 class="font-bold text-base mb-1">Daftar Akun</h3>
+                    <p class="text-teal-200 text-xs">Isi formulir pendaftaran sebagai Pengelola Wisata dengan data usaha Anda.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 2</div>
+                    <h3 class="font-bold text-base mb-1">Verifikasi Admin</h3>
+                    <p class="text-teal-200 text-xs">Tim pengelola desa wisata akan memverifikasi data usaha Anda dalam 1×24 jam.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
+                    <div class="text-4xl mb-3">✅</div>
+                    <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 3</div>
+                    <h3 class="font-bold text-base mb-1">Akun Disetujui</h3>
+                    <p class="text-teal-200 text-xs">Anda akan menerima notifikasi email saat akun telah diaktifkan.</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
+                    <div class="text-4xl mb-3">🚀</div>
+                    <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 4</div>
+                    <h3 class="font-bold text-base mb-1">Kelola Layanan</h3>
+                    <p class="text-teal-200 text-xs">Login ke panel mitra, tambahkan paket wisata, dan mulai terima pesanan!</p>
+                </div>
+            </div>
+
+            <a href="{{ route('register') }}?role=admin_layanan" wire:navigate
+               class="inline-block bg-yellow-400 text-teal-900 font-extrabold px-10 py-4 rounded-xl hover:bg-yellow-300 transition-all shadow-lg text-lg transform hover:-translate-y-1">
+                🤝 Daftar sebagai Mitra Sekarang
+            </a>
+            <p class="text-teal-300 text-sm mt-4">Gratis — Tidak ada biaya pendaftaran</p>
+        </div>
+    </section>
+
 </div>
