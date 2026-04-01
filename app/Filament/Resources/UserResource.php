@@ -43,11 +43,19 @@ class UserResource extends Resource
                     ->required(fn(string $context) => $context === 'create'),
             ])->columns(2),
 
-            Forms\Components\Section::make('Info Bisnis (Admin Layanan)')
+            Forms\Components\Section::make('Profil Usaha (Khusus Admin Layanan)')
+                ->description('Data ini digunakan untuk keperluan verifikasi identitas oleh Super Admin dan TIDAK ditampilkan kepada wisatawan.')
                 ->schema([
-                    Forms\Components\TextInput::make('business_name')->label('Nama Bisnis'),
-                    Forms\Components\TextInput::make('business_address')->label('Alamat Bisnis'),
-                    Forms\Components\Textarea::make('business_description')->label('Deskripsi Bisnis')->rows(3)->columnSpanFull(),
+                    Forms\Components\TextInput::make('business_name')
+                        ->label('Nama Usaha / Badan Usaha')
+                        ->helperText('Contoh: CV Budi Jaya, Pokdarwis Pulau Pramuka'),
+                    Forms\Components\TextInput::make('business_address')
+                        ->label('Domisili / Alamat Kantor Usaha')
+                        ->helperText('Alamat fisik tempat usaha beroperasi'),
+                    Forms\Components\Textarea::make('business_description')
+                        ->label('Profil Singkat Usaha')
+                        ->helperText('Ceritakan secara singkat jenis usaha dan pengalaman yang dimiliki.')
+                        ->rows(3)->columnSpanFull(),
                 ])
                 ->columns(2)
                 ->visible(fn(Forms\Get $get) => $get('role') === 'admin_layanan'),

@@ -16,6 +16,15 @@ class Register extends Component
     public string $passwordConfirm  = '';
     public string $role             = 'wisatawan';
 
+    public function mount(): void
+    {
+        // Pre-select role from query param, e.g. /register?role=admin_layanan
+        $roleParam = request()->query('role');
+        if (in_array($roleParam, ['wisatawan', 'admin_layanan'])) {
+            $this->role = $roleParam;
+        }
+    }
+
     // Business fields (admin_layanan)
     public string $businessName     = '';
     public string $businessAddress  = '';
@@ -63,8 +72,14 @@ class Register extends Component
             $intendedUrl = session()->pull('url.intended', route('dashboard'));
             $this->redirect($intendedUrl, navigate: true);
         } else {
-            // admin_layanan → redirect to login with info message
-            session()->flash('info', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Super Admin.');
+            // admin_layanan → notify all super admins
+            \App\Models\User::where('role', \App\Models\User::ROLE_SUPER_ADMIN)
+                ->get()
+                ->each(fn($superAdmin) => $superAdmin->notify(
+                    new \App\Notifications\NewAdminRegistrationNotification($user)
+                ));
+
+            session()->flash('info', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Super Admin. Anda akan mendapat email saat akun disetujui.');
             $this->redirect(route('login'), navigate: true);
         }
     }
