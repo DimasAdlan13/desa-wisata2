@@ -150,4 +150,89 @@
             </aside>
         </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════
+         LAYANAN SERUPA — Content-Based Filtering
+    ═══════════════════════════════════════════════ -->
+    @if($similarServices->isNotEmpty())
+    <div class="border-t border-gray-100 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800">
+                        🔍 Layanan Serupa
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Berdasarkan kategori <span class="font-semibold text-teal-600">{{ $service->category->name }}</span> dan kisaran harga
+                    </p>
+                </div>
+                <a href="{{ route('layanan.index', ['categoryId' => $service->category_id]) }}" wire:navigate
+                   class="inline-flex items-center gap-1 text-teal-600 hover:text-teal-800 text-sm font-semibold transition-colors shrink-0">
+                    Lihat semua kategori ini →
+                </a>
+            </div>
+
+            <!-- Grid Cards: 1 kolom (mobile) → 2 kolom (sm) → 4 kolom (lg) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                @foreach($similarServices as $similar)
+                <a href="{{ route('layanan.show', $similar->slug) }}" wire:navigate
+                   class="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
+
+                    <!-- Thumbnail -->
+                    <div class="relative h-44 sm:h-40 md:h-44 bg-teal-50 overflow-hidden shrink-0">
+                        @if($similar->primaryPhoto)
+                            <img src="{{ Storage::url($similar->primaryPhoto->photo_path) }}"
+                                 alt="{{ $similar->name }}"
+                                 loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-5xl text-teal-300">
+                                {{ $similar->category->icon ?? '🏖️' }}
+                            </div>
+                        @endif
+
+                        <!-- Badge Kategori -->
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-teal-700 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                            {{ $similar->category->name }}
+                        </span>
+                    </div>
+
+                    <!-- Konten Card -->
+                    <div class="p-4 flex flex-col flex-1 gap-2">
+                        <h3 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2 group-hover:text-teal-700 transition-colors">
+                            {{ $similar->name }}
+                        </h3>
+
+                        <!-- Rating -->
+                        @php $simRating = round($similar->ratings->avg('rating') ?? 0, 1); @endphp
+                        <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                            @if($simRating > 0)
+                                <span class="text-yellow-400">⭐</span>
+                                <span class="font-semibold text-gray-700">{{ $simRating }}</span>
+                                <span>({{ $similar->ratings->count() }} ulasan)</span>
+                            @else
+                                <span class="text-gray-400 italic">Belum ada ulasan</span>
+                            @endif
+                        </div>
+
+                        <!-- Harga di bagian bawah -->
+                        <div class="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wide">Mulai dari</p>
+                                <p class="text-teal-700 font-extrabold text-sm">{{ $similar->formatted_price }}</p>
+                            </div>
+                            <span class="text-xs bg-teal-50 text-teal-600 group-hover:bg-teal-600 group-hover:text-white font-semibold px-3 py-1.5 rounded-full transition-colors">
+                                Detail →
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>
