@@ -35,7 +35,7 @@ class Login extends Component
             return;
         }
 
-        $intendedUrl = session()->pull('url.intended', route('dashboard'));
+        $intendedUrl = session()->pull('url.intended', route('home'));
         $this->redirect(
             $user->isSuperAdmin() || $user->isAdminLayanan()
                 ? '/admin'
