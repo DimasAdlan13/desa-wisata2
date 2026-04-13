@@ -88,6 +88,19 @@ class BookingResource extends Resource
                     ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('service_id')
+                    ->label('Layanan')
+                    ->options(function () {
+                        $user = auth()->user();
+                        $query = \App\Models\Service::query()->where('is_approved', true)->where('is_active', true);
+
+                        if ($user->isAdminLayanan()) {
+                            $query->where('user_id', $user->id);
+                        }
+
+                        return $query->pluck('name', 'id')->toArray();
+                    })
+                    ->searchable(),
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options([
