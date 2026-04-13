@@ -158,20 +158,30 @@
 
 
 
-    <!-- Categories -->
-    <section class="max-w-7xl mx-auto px-4 py-16">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Kategori Wisata</h2>
-        <div class="flex flex-wrap gap-3 justify-center">
-            @foreach($categories as $cat)
-            <a href="{{ route('layanan.index', ['categoryId' => $cat->id]) }}" wire:navigate
-               class="flex items-center gap-2 bg-teal-50 hover:bg-teal-600 hover:text-white border border-teal-200 text-teal-700 px-5 py-2.5 rounded-full transition-all font-medium">
-                @if($cat->icon) <span>{{ $cat->icon }}</span> @endif
-                {{ $cat->name }}
-                <span class="text-xs bg-teal-100 hover:bg-teal-500 text-teal-600 hover:text-white px-2 py-0.5 rounded-full">{{ $cat->service_count }}</span>
-            </a>
-            @endforeach
+<div class="w-full">
+    <!-- Garis Atas -->
+    <div class="h-1 w-full bg-gradient-to-r from-transparent via-teal-500 to-transparent"></div>
+
+    <section class="bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 py-16">
+            <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Kategori Wisata</h2>
+
+            <div class="flex flex-wrap gap-3 justify-center">
+                @foreach($categories as $cat)
+                <a href="{{ route('layanan.index', ['categoryId' => $cat->id]) }}" wire:navigate
+                   class="flex items-center gap-2 bg-teal-50 hover:bg-teal-600 hover:text-white border border-teal-200 text-teal-700 px-5 py-2.5 rounded-full transition-all font-medium">
+                    @if($cat->icon) <span>{{ $cat->icon }}</span> @endif
+                    {{ $cat->name }}
+                    <span class="text-xs bg-teal-100 hover:bg-teal-500 text-teal-600 hover:text-white px-2 py-0.5 rounded-full">{{ $cat->service_count }}</span>
+                </a>
+                @endforeach
+            </div>
         </div>
     </section>
+
+    <!-- Garis Bawah -->
+    <div class="h-1 w-full bg-gradient-to-r from-transparent via-teal-500 to-transparent"></div>
+</div>
 
     <!-- Featured Services -->
     <section class="bg-gray-50 py-16">
@@ -210,37 +220,39 @@
 
     <!-- Latest Content -->
     @if($latestContents->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 py-16">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8">Info & Artikel Terbaru</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @foreach($latestContents as $content)
-            <a href="{{ route('konten.show', $content->slug) }}" wire:navigate
-               class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all group">
-                @if($content->cover_image)
-                    <div class="h-40 overflow-hidden">
-                        <img src="{{ Storage::url($content->cover_image) }}" loading="lazy" alt="{{ $content->title }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+    <section class="bg-teal-700 w-full py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-white mb-8">Info & Artikel Terbaru</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach($latestContents as $content)
+                <a href="{{ route('konten.show', $content->slug) }}" wire:navigate
+                   class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all group">
+                    @if($content->cover_image)
+                        <div class="h-40 overflow-hidden">
+                            <img src="{{ Storage::url($content->cover_image) }}" loading="lazy" alt="{{ $content->title }}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                    @endif
+                    <div class="p-5">
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ $content->type_label }}</span>
+                        <h3 class="font-bold text-gray-800 mt-2 line-clamp-2">{{ $content->title }}</h3>
+                        <p class="text-gray-500 text-sm mt-1">{{ $content->published_at?->format('d M Y') }}</p>
                     </div>
-                @endif
-                <div class="p-5">
-                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ $content->type_label }}</span>
-                    <h3 class="font-bold text-gray-800 mt-2 line-clamp-2">{{ $content->title }}</h3>
-                    <p class="text-gray-500 text-sm mt-1">{{ $content->published_at?->format('d M Y') }}</p>
-                </div>
-            </a>
-            @endforeach
+                </a>
+                @endforeach
+            </div>
         </div>
     </section>
     @endif
 
     <!-- Menjadi Mitra Section -->
-    <section class="bg-gradient-to-br from-teal-700 to-blue-800 py-20 text-white">
+    <section class="py-20 text-white">
         <div class="max-w-5xl mx-auto px-4 text-center">
-            <span class="bg-yellow-400 text-teal-900 text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">Peluang Usaha</span>
-            <h2 class="text-3xl md:text-4xl font-extrabold mt-4 mb-4">
+            <span class="bg-teal-50 text-teal-600 text-xs font-bold px-4 py-1 rounded-full border border-teal-200 uppercase tracking-wider">Peluang Usaha</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold mt-4 mb-4 text-gray-700">
                 Ingin Menjadi <span class="text-yellow-300">Mitra Wisata</span> Kami?
             </h2>
-            <p class="text-teal-100 text-lg mb-12 max-w-2xl mx-auto">
+            <p class="text-gray-700 text-lg mb-12 max-w-2xl mx-auto">
                 Daftarkan usaha wisata Anda dan jangkau lebih banyak wisatawan dari seluruh Indonesia melalui platform digital Desa Wisata Kepulauan Seribu.
             </p>
 
@@ -249,26 +261,26 @@
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
                     <div class="text-4xl mb-3">📝</div>
                     <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 1</div>
-                    <h3 class="font-bold text-base mb-1">Daftar Akun</h3>
-                    <p class="text-teal-200 text-xs">Isi formulir pendaftaran sebagai Pengelola Wisata dengan data usaha Anda.</p>
+                    <h3 class="font-bold text-base mb-1 text-gray-700">Daftar Akun</h3>
+                    <p class="text-gray-500 text-xs">Isi formulir pendaftaran sebagai Pengelola Wisata dengan data usaha Anda.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
                     <div class="text-4xl mb-3">🔍</div>
                     <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 2</div>
-                    <h3 class="font-bold text-base mb-1">Verifikasi Admin</h3>
-                    <p class="text-teal-200 text-xs">Tim pengelola desa wisata akan memverifikasi data usaha Anda dalam 1×24 jam.</p>
+                    <h3 class="font-bold text-base mb-1 text-gray-700">Verifikasi Admin</h3>
+                    <p class="text-gray-500 text-xs">Tim pengelola desa wisata akan memverifikasi data usaha Anda dalam 1×24 jam.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
                     <div class="text-4xl mb-3">✅</div>
                     <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 3</div>
-                    <h3 class="font-bold text-base mb-1">Akun Disetujui</h3>
-                    <p class="text-teal-200 text-xs">Anda akan menerima notifikasi email saat akun telah diaktifkan.</p>
+                    <h3 class="font-bold text-base mb-1 text-gray-700">Akun Disetujui</h3>
+                    <p class="text-gray-500 text-xs">Anda akan menerima notifikasi email saat akun telah diaktifkan.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-5 text-center hover:bg-white/20 transition-all">
                     <div class="text-4xl mb-3">🚀</div>
                     <div class="text-yellow-300 font-bold text-sm mb-1">Langkah 4</div>
-                    <h3 class="font-bold text-base mb-1">Kelola Layanan</h3>
-                    <p class="text-teal-200 text-xs">Login ke panel mitra, tambahkan paket wisata, dan mulai terima pesanan!</p>
+                    <h3 class="font-bold text-base mb-1 text-gray-700">Kelola Layanan</h3>
+                    <p class="text-gray-500 text-xs">Login ke panel mitra, tambahkan paket wisata, dan mulai terima pesanan!</p>
                 </div>
             </div>
 
@@ -276,7 +288,7 @@
                class="inline-block bg-yellow-400 text-teal-900 font-extrabold px-10 py-4 rounded-xl hover:bg-yellow-300 transition-all shadow-lg text-lg transform hover:-translate-y-1">
                 🤝 Daftar sebagai Mitra Sekarang
             </a>
-            <p class="text-teal-300 text-sm mt-4">Gratis — Tidak ada biaya pendaftaran</p>
+            <p class="text-teal-600 text-sm mt-4">Gratis — Tidak ada biaya pendaftaran</p>
         </div>
     </section>
 
