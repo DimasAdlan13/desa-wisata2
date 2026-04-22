@@ -33,6 +33,82 @@
                 </div>
             </div>
 
+            {{-- Dropdown Provinsi & Kota — Hanya untuk Wisatawan --}}
+            @if($role === 'wisatawan')
+            <div
+                x-data="{
+                    provinces: [],
+                    cities: [],
+                    selectedProvinceId: '',
+                    loadingProvince: true,
+                    loadingCity: false,
+                    init() {
+                        fetch('https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json')
+                            .then(r => r.json())
+                            .then(data => {
+                                this.provinces = data;
+                                this.loadingProvince = false;
+                            });
+                    },
+                    selectProvince(id, name) {
+                        this.selectedProvinceId = id;
+                        this.cities = [];
+                        this.loadingCity = true;
+                        $wire.set('province', name);
+                        $wire.set('city', '');
+                        fetch('https://emsifa.github.io/api-wilayah-indonesia/api/regencies/' + id + '.json')
+                            .then(r => r.json())
+                            .then(data => {
+                                this.cities = data;
+                                this.loadingCity = false;
+                            });
+                    },
+                    selectCity(name) {
+                        $wire.set('city', name);
+                    }
+                }"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+                {{-- Dropdown Provinsi --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Provinsi Asal <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        x-on:change="selectProvince($event.target.value, $event.target.options[$event.target.selectedIndex].text)"
+                        :disabled="loadingProvince"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:bg-gray-100 @error('province') border-red-300 @enderror"
+                    >
+                        <option value="" x-text="loadingProvince ? 'Memuat provinsi...' : 'Pilih Provinsi'"></option>
+                        <template x-for="prov in provinces" :key="prov.id">
+                            <option :value="prov.id" x-text="prov.name"></option>
+                        </template>
+                    </select>
+                    @error('province') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Dropdown Kota/Kabupaten --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Kabupaten/Kota <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        x-on:change="selectCity($event.target.options[$event.target.selectedIndex].text)"
+                        :disabled="!selectedProvinceId || loadingCity"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:bg-gray-100 @error('city') border-red-300 @enderror"
+                    >
+                        <option value=""
+                            x-text="!selectedProvinceId ? 'Pilih provinsi dahulu' : (loadingCity ? 'Memuat kota...' : 'Pilih Kota/Kabupaten')"
+                        ></option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name"></option>
+                        </template>
+                    </select>
+                    @error('city') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+            @endif
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input wire:model="email" type="email" placeholder="email@kamu.com"

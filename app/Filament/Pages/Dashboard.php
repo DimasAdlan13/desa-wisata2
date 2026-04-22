@@ -56,6 +56,7 @@ class Dashboard extends BaseDashboard
             \App\Filament\Widgets\BookingPerMonthChart::class ,
             \App\Filament\Widgets\TopServicesChart::class ,
             \App\Filament\Widgets\BookingStatusChart::class ,
+            \App\Filament\Widgets\VisitorOriginChart::class ,
             \App\Filament\Widgets\RecentReviewsWidget::class ,
         ];
     }
