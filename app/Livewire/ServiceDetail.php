@@ -26,62 +26,89 @@ class ServiceDetail extends Component
     }
 
     /**
-     * Algoritma Content-Based Filtering — Weighted Scoring
+     * =========================================================
+     * ALGORITMA: Content-Based Filtering dengan Weighted Scoring
+     * METODE   : Simple Additive Weighting (SAW)
+     * BOBOT    : Ditentukan dari hasil kuesioner AHP
+     * =========================================================
      *
-     * Setiap layanan lain diberi skor berdasarkan kemiripannya
-     * dengan layanan yang sedang dilihat:
-     *   +60  → Kategori sama (sinyal terkuat)
-     *   +25  → Harga dalam rentang ±50% dari harga layanan ini
-     *   +15  → Skor bonus dari rating rata-rata (rating × 3, maks 15)
-     *   +10  → Lokasi mengandung kata kunci yang sama (misal "Pramuka")
+     * Kriteria yang digunakan (3 kriteria):
+     *   1. Kategori  → Kemiripan jenis layanan wisata
+     *   2. Harga     → Kemiripan segmentasi harga (±50%)
+     *   3. Rating    → Kualitas layanan (benefit: makin tinggi makin baik)
      *
-     * Hasilnya diurutkan dari skor tertinggi, diambil 4 teratas.
+     * ⚠️  CATATAN BOBOT AHP:
+     *     Setelah kuesioner AHP selesai, ganti konstanta di bawah
+     *     dengan hasil perhitungan bobot dari kuesioner Anda.
      */
     protected function getSimilarServices(): \Illuminate\Support\Collection
     {
-        $current      = $this->service;
-        $priceMin     = $current->price * 0.5;
-        $priceMax     = $current->price * 1.5;
+        // =========================================================
+        // ✏️  GANTI NILAI INI SETELAH KUESIONER AHP SELESAI
+        //     Total ketiga bobot HARUS = 1.0 (100%)
+        //
+        //     Contoh jika hasil AHP:
+        //       Kategori = 0.60, Harga = 0.25, Rating = 0.15
+        // =========================================================
+        $bobotKategori = 0.60; // ← GANTI dengan bobot AHP kriteria Kategori
+        $bobotHarga    = 0.25; // ← GANTI dengan bobot AHP kriteria Harga
+        $bobotRating   = 0.15; // ← GANTI dengan bobot AHP kriteria Rating
+        // =========================================================
 
-        // Ambil kata-kata penting dari lokasi layanan ini (lebih dari 3 karakter)
-        $locationWords = collect(explode(' ', strtolower($current->location ?? '')))
-            ->filter(fn($w) => strlen($w) > 3)
-            ->values();
+        $current = $this->service;
 
-        // Ambil semua layanan publik kecuali layanan yang sedang dilihat
+        // OPTIMASI: Ambil semua kandidat sekaligus (1 query)
+        // withAvg → MySQL hitung rata-rata rating, tidak load semua baris ratings
         $candidates = Service::public()
-            ->with(['category', 'primaryPhoto', 'ratings'])
+            ->with(['category', 'primaryPhoto'])
+            ->withAvg('ratings', 'rating')
             ->where('id', '!=', $current->id)
             ->get();
 
+        // MIN-MAX SCALING untuk Harga:
+        // Dihitung SEKALI di luar loop → hanya 2 nilai, tidak berulang per kandidat
+        $allPrices  = $candidates->pluck('price')->push($current->price);
+        $minHarga   = $allPrices->min();
+        $maxHarga   = $allPrices->max();
+        $rangeHarga = $maxHarga - $minHarga;
+
+        // Normalisasi harga layanan yang sedang dilihat (dihitung sekali)
+        $normHargaCurrent = ($rangeHarga > 0)
+            ? ($current->price - $minHarga) / $rangeHarga
+            : 0;
+
+        // HITUNG SKOR SAW untuk setiap kandidat
         return $candidates
-            ->map(function (Service $service) use ($current, $priceMin, $priceMax, $locationWords) {
-                $score = 0;
+            ->map(function (Service $service) use (
+                $current, $minHarga, $rangeHarga, $normHargaCurrent,
+                $bobotKategori, $bobotHarga, $bobotRating
+            ) {
+                // --- Kriteria 1: KATEGORI (nilai: 1 atau 0) ---
+                // Kemiripan biner: sama kategori = 1, beda = 0
+                $nilaiKategori = ($service->category_id === $current->category_id) ? 1 : 0;
 
-                // +60: Kategori sama
-                if ($service->category_id === $current->category_id) {
-                    $score += 60;
-                }
+                // --- Kriteria 2: HARGA — Min-Max Scaling (nilai: 0.0 – 1.0) ---
+                // Rumus: nilaiHarga = 1 - |normCandidate - normCurrent|
+                // Makin dekat harganya → nilaiHarga makin mendekati 1
+                // Makin jauh harganya  → nilaiHarga makin mendekati 0
+                $normHargaCandidate = ($rangeHarga > 0)
+                    ? ($service->price - $minHarga) / $rangeHarga
+                    : 0;
+                $nilaiHarga = round(1 - abs($normHargaCandidate - $normHargaCurrent), 4);
 
-                // +25: Harga dalam rentang ±50%
-                if ($service->price >= $priceMin && $service->price <= $priceMax) {
-                    $score += 25;
-                }
+                // --- Kriteria 3: RATING — SAW Benefit (nilai: 0.0 – 1.0) ---
+                // Rumus: nilaiRating = avgRating / ratingMaksimal (5)
+                // Makin tinggi rating → makin besar nilainya (bukan mencari kemiripan rating)
+                $avgRating   = $service->ratings_avg_rating ?? 0;
+                $nilaiRating = round($avgRating / 5, 4);
 
-                // +maks 15: Bonus rating rata-rata (rating 5.0 → +15 poin)
-                $avgRating = $service->ratings->avg('rating') ?? 0;
-                $score += round($avgRating * 3);
+                // --- RUMUS SAW AKHIR ---
+                // Skor = (W_kategori × N_kategori) + (W_harga × N_harga) + (W_rating × N_rating)
+                $skor = ($bobotKategori * $nilaiKategori)
+                      + ($bobotHarga    * $nilaiHarga)
+                      + ($bobotRating   * $nilaiRating);
 
-                // +10: Lokasi mengandung kata kunci yang sama
-                $serviceLoc = strtolower($service->location ?? '');
-                foreach ($locationWords as $word) {
-                    if (str_contains($serviceLoc, (string) $word)) {
-                        $score += 10;
-                        break;
-                    }
-                }
-
-                $service->similarity_score = $score;
+                $service->similarity_score = round($skor, 4);
                 return $service;
             })
             ->sortByDesc('similarity_score')
