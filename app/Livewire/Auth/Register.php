@@ -15,6 +15,8 @@ class Register extends Component
     public string $password         = '';
     public string $passwordConfirm  = '';
     public string $role             = 'wisatawan';
+    public string $province         = '';
+    public string $city             = '';
 
     public function mount(): void
     {
@@ -40,6 +42,11 @@ class Register extends Component
             'role'            => 'required|in:wisatawan,admin_layanan',
         ];
 
+        if ($this->role === 'wisatawan') {
+            $rules['province'] = 'required|string|max:100';
+            $rules['city']     = 'required|string|max:100';
+        }
+
         if ($this->role === 'admin_layanan') {
             $rules['businessName']    = 'required|string|max:100';
             $rules['businessAddress'] = 'required|string|max:255';
@@ -58,11 +65,11 @@ class Register extends Component
             'phone'                => $this->phone,
             'password'             => $this->password,
             'role'                 => $this->role,
+            'province'             => $this->province ?: null,
+            'city'                 => $this->city ?: null,
             'business_name'        => $this->businessName ?: null,
             'business_address'     => $this->businessAddress ?: null,
             'business_description' => $this->businessDesc ?: null,
-            // is_approved: false by default (admin_layanan needs approval)
-            // wisatawan: is_approved kept false but isActive() returns true for them
         ]);
 
         event(new Registered($user));
