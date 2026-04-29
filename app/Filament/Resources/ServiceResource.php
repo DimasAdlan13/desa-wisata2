@@ -40,18 +40,18 @@ class ServiceResource extends Resource
                 Forms\Components\TextInput::make('slug')->label('Slug')->required()->unique(ignoreRecord: true),
                 Forms\Components\Select::make('category_id')
                     ->label('Kategori')
-                    ->relationship('category', 'name')
+                    ->options(fn() => \App\Models\ServiceCategory::orderBy('name')->pluck('name', 'id'))
                     ->required()
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
                 Forms\Components\Select::make('user_id')
                     ->label('Admin Pengelola')
-                    ->relationship('user', 'name', fn(Builder $q) =>
-                        $q->where('role', User::ROLE_ADMIN_LAYANAN)->where('is_approved', true)
+                    ->options(fn() => \App\Models\User::where('role', \App\Models\User::ROLE_ADMIN_LAYANAN)
+                        ->where('is_approved', true)
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
                     )
                     ->required()
                     ->searchable()
-                    ->preload()
                     ->visible(fn() => auth()->user()->isSuperAdmin()),
                 Forms\Components\TextInput::make('price')
                     ->label('Harga (Rp)')

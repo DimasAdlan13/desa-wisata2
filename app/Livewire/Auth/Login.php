@@ -36,6 +36,12 @@ class Login extends Component
         }
 
         $intendedUrl = session()->pull('url.intended', route('home'));
+
+        // Untuk wisatawan: pastikan url.intended bukan URL admin (sisa session lama)
+        if ($user->isWisatawan() && str_starts_with($intendedUrl, '/admin')) {
+            $intendedUrl = route('home');
+        }
+
         $this->redirect(
             $user->isSuperAdmin() || $user->isAdminLayanan()
                 ? '/admin'
