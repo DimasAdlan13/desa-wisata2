@@ -14,6 +14,7 @@ class BookingForm extends Component
     // Static fields
     public string $bookingDate = '';
     public int    $pax         = 1;
+    public string $phone       = '';
 
     // Dynamic fields from form_schema
     public array  $dynamicFields = [];
@@ -22,6 +23,9 @@ class BookingForm extends Component
     {
         abort_if(!auth()->user()->isWisatawan(), 403, 'Hanya Wisatawan yang dapat membuat pesanan.');
         $this->service = $service;
+
+        // Pre-fill phone dari profil user
+        $this->phone = auth()->user()->phone ?? '';
 
         // Initialize dynamic fields from form_schema
         if ($service->form_schema) {
@@ -36,6 +40,7 @@ class BookingForm extends Component
         $rules = [
             'bookingDate' => ['required', 'date', 'after_or_equal:today'],
             'pax'         => ['required', 'integer', 'min:1', 'max:' . $this->service->quota_per_day],
+            'phone'       => ['required', 'string', 'max:20'],
         ];
 
         // Dynamic validation: all dynamic fields are required
@@ -53,6 +58,7 @@ class BookingForm extends Component
             'bookingDate.after_or_equal'  => 'Tanggal wisata tidak boleh di masa lampau.',
             'pax.min'                     => 'Minimal 1 orang.',
             'pax.max'                     => "Maksimal {$this->service->quota_per_day} orang per hari.",
+            'phone.required'              => 'Nomor WhatsApp wajib diisi agar admin dapat menghubungi Anda.',
         ];
     }
 
@@ -86,7 +92,10 @@ class BookingForm extends Component
                 [
                     'booking_date'    => $this->bookingDate,
                     'pax'             => $this->pax,
-                    'booking_details' => $this->dynamicFields,
+                    'booking_details' => array_merge(
+                        $this->dynamicFields,
+                        ['nomor_wa_pemesan' => $this->phone]
+                    ),
                 ]
             );
 

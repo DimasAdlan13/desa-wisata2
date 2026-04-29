@@ -76,8 +76,11 @@ class Register extends Component
 
         if ($user->isWisatawan()) {
             Auth::login($user);
-            $intendedUrl = session()->pull('url.intended', route('dashboard'));
-            $this->redirect($intendedUrl, navigate: true);
+            // Hapus url.intended — user baru tidak punya booking,
+            // jangan diarahkan ke URL sesi browser lama yang bisa milik user lain
+            session()->forget('url.intended');
+            $this->redirect(route('dashboard'), navigate: true);
+
         } else {
             // admin_layanan → notify all super admins
             \App\Models\User::where('role', \App\Models\User::ROLE_SUPER_ADMIN)

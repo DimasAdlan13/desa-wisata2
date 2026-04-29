@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Service;
 use App\Models\User;
+use App\Notifications\AdminApprovedNotification;
+use App\Notifications\ServiceStatusNotification;
 
 class ApprovalService
 {
@@ -18,8 +20,7 @@ class ApprovalService
             'approved_at' => now(),
         ]);
 
-        // Notify the admin_layanan by email
-        $user->notify(new \App\Notifications\AdminApprovedNotification());
+        $user->notify(new AdminApprovedNotification(approved: true));
 
         return $user->fresh();
     }
@@ -35,6 +36,8 @@ class ApprovalService
             'approved_at' => null,
         ]);
 
+        $user->notify(new AdminApprovedNotification(approved: false));
+
         return $user->fresh();
     }
 
@@ -49,6 +52,9 @@ class ApprovalService
             'approved_at' => now(),
         ]);
 
+        // Notify the service owner
+        $service->user?->notify(new ServiceStatusNotification($service->fresh(), approved: true));
+
         return $service->fresh();
     }
 
@@ -62,6 +68,9 @@ class ApprovalService
             'approved_by' => null,
             'approved_at' => null,
         ]);
+
+        // Notify the service owner
+        $service->user?->notify(new ServiceStatusNotification($service->fresh(), approved: false));
 
         return $service->fresh();
     }
