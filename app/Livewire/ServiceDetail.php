@@ -50,9 +50,9 @@ class ServiceDetail extends Component
         //     Contoh jika hasil AHP:
         //       Kategori = 0.60, Harga = 0.25, Rating = 0.15
         // =========================================================
-        $bobotKategori = 0.60; // ← GANTI dengan bobot AHP kriteria Kategori
-        $bobotHarga    = 0.25; // ← GANTI dengan bobot AHP kriteria Harga
-        $bobotRating   = 0.15; // ← GANTI dengan bobot AHP kriteria Rating
+        $bobotKategori = 0.43; // ← GANTI dengan bobot AHP kriteria Kategori
+        $bobotHarga = 0.37; // ← GANTI dengan bobot AHP kriteria Harga
+        $bobotRating = 0.20; // ← GANTI dengan bobot AHP kriteria Rating
         // =========================================================
 
         $current = $this->service;
@@ -67,9 +67,9 @@ class ServiceDetail extends Component
 
         // MIN-MAX SCALING untuk Harga:
         // Dihitung SEKALI di luar loop → hanya 2 nilai, tidak berulang per kandidat
-        $allPrices  = $candidates->pluck('price')->push($current->price);
-        $minHarga   = $allPrices->min();
-        $maxHarga   = $allPrices->max();
+        $allPrices = $candidates->pluck('price')->push($current->price);
+        $minHarga = $allPrices->min();
+        $maxHarga = $allPrices->max();
         $rangeHarga = $maxHarga - $minHarga;
 
         // Normalisasi harga layanan yang sedang dilihat (dihitung sekali)
@@ -79,10 +79,7 @@ class ServiceDetail extends Component
 
         // HITUNG SKOR SAW untuk setiap kandidat
         return $candidates
-            ->map(function (Service $service) use (
-                $current, $minHarga, $rangeHarga, $normHargaCurrent,
-                $bobotKategori, $bobotHarga, $bobotRating
-            ) {
+            ->map(function (Service $service) use ($current, $minHarga, $rangeHarga, $normHargaCurrent, $bobotKategori, $bobotHarga, $bobotRating) {
                 // --- Kriteria 1: KATEGORI (nilai: 1 atau 0) ---
                 // Kemiripan biner: sama kategori = 1, beda = 0
                 $nilaiKategori = ($service->category_id === $current->category_id) ? 1 : 0;
@@ -99,14 +96,14 @@ class ServiceDetail extends Component
                 // --- Kriteria 3: RATING — SAW Benefit (nilai: 0.0 – 1.0) ---
                 // Rumus: nilaiRating = avgRating / ratingMaksimal (5)
                 // Makin tinggi rating → makin besar nilainya (bukan mencari kemiripan rating)
-                $avgRating   = $service->ratings_avg_rating ?? 0;
+                $avgRating = $service->ratings_avg_rating ?? 0;
                 $nilaiRating = round($avgRating / 5, 4);
 
                 // --- RUMUS SAW AKHIR ---
                 // Skor = (W_kategori × N_kategori) + (W_harga × N_harga) + (W_rating × N_rating)
                 $skor = ($bobotKategori * $nilaiKategori)
-                      + ($bobotHarga    * $nilaiHarga)
-                      + ($bobotRating   * $nilaiRating);
+                    + ($bobotHarga * $nilaiHarga)
+                    + ($bobotRating * $nilaiRating);
 
                 $service->similarity_score = round($skor, 4);
                 return $service;
@@ -123,8 +120,8 @@ class ServiceDetail extends Component
             $availableQuota = (new BookingService())->getRemainingQuota($this->service, now()->toDateString());
         }
 
-        $ratings        = $this->service->ratings()->with('user')->latest()->take(10)->get();
-        $avgRating      = $this->service->ratings()->avg('rating');
+        $ratings = $this->service->ratings()->with('user')->latest()->take(10)->get();
+        $avgRating = $this->service->ratings()->avg('rating');
         $similarServices = $this->getSimilarServices();
 
         return view('livewire.service-detail', compact('availableQuota', 'ratings', 'avgRating', 'similarServices'))
