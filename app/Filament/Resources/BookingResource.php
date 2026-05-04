@@ -26,10 +26,16 @@ class BookingResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Detail Booking')->schema([
                 Forms\Components\TextInput::make('booking_code')->label('Kode Booking')->disabled(),
-                Forms\Components\TextInput::make('user.name')->label('Wisatawan')->disabled(),
-                Forms\Components\TextInput::make('service.name')->label('Layanan')->disabled(),
+                Forms\Components\Placeholder::make('wisatawan_name')
+                    ->label('Wisatawan')
+                    ->content(fn (?Booking $record) => $record?->user?->name ?? '-'),
+                Forms\Components\Placeholder::make('service_name')
+                    ->label('Layanan')
+                    ->content(fn (?Booking $record) => $record?->service?->name ?? '-'),
                 Forms\Components\DatePicker::make('booking_date')->label('Tanggal Wisata')->disabled(),
-                Forms\Components\TextInput::make('pax')->label('Jumlah Pax')->disabled(),
+                Forms\Components\Placeholder::make('pax')
+                    ->label(fn (?Booking $record) => 'Jumlah ' . ($record?->service?->unit_name ?? 'Pax'))
+                    ->content(fn (?Booking $record) => $record?->pax ?? '-'),
                 Forms\Components\TextInput::make('total_price')->label('Total Harga')->prefix('Rp')->disabled(),
                 Forms\Components\Select::make('status')
                     ->label('Status')
@@ -39,8 +45,13 @@ class BookingResource extends Resource
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
                         'rejected'  => 'Rejected',
-                    ]),
-                Forms\Components\Textarea::make('rejection_reason')->label('Alasan Penolakan')->rows(2),
+                    ])
+                    ->live(),
+                Forms\Components\Textarea::make('rejection_reason')
+                    ->label('Alasan Penolakan')
+                    ->rows(2)
+                    ->visible(fn (Forms\Get $get) => in_array($get('status'), ['rejected', 'cancelled']))
+                    ->required(fn (Forms\Get $get) => $get('status') === 'rejected'),
             ])->columns(2),
 
             Forms\Components\Section::make('Bukti Pembayaran')->schema([
@@ -49,7 +60,8 @@ class BookingResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('payment-proofs')
-                    ->disabled(),
+                    ->visible(fn (Forms\Get $get) => in_array($get('status'), ['confirmed', 'completed']))
+                    ->required(fn (Forms\Get $get) => $get('status') === 'confirmed'),
             ]),
         ]);
     }
@@ -68,7 +80,10 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')->label('Wisatawan')->searchable(),
                 Tables\Columns\TextColumn::make('service.name')->label('Layanan')->limit(30),
                 Tables\Columns\TextColumn::make('booking_date')->label('Tanggal')->date('d/m/Y')->sortable(),
-                Tables\Columns\TextColumn::make('pax')->label('Pax')->alignCenter(),
+                Tables\Columns\TextColumn::make('pax')
+                    ->label('Jumlah (Qty)')
+                    ->alignCenter()
+                    ->formatStateUsing(fn ($state, Booking $record) => $state . ' ' . strtolower($record->service->unit_name ?? 'orang')),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Total')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
@@ -81,11 +96,6 @@ class BookingResource extends Resource
                         'gray'    => 'cancelled',
                         'danger'  => 'rejected',
                     ]),
-                Tables\Columns\IconColumn::make('payment_proof')
-                    ->label('Bukti Bayar')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('service_id')
@@ -122,45 +132,7 @@ class BookingResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('confirm_payment')
-                    ->label('Konfirmasi Bayar')
-                    ->icon('heroicon-o-credit-card')
-                    ->color('success')
-                    ->visible(fn(Booking $r) => $r->status === 'pending' && $r->payment_proof)
-                    ->requiresConfirmation()
-                    ->action(function (Booking $record) {
-                        (new BookingService())->confirmPayment($record, auth()->user());
-                        Notification::make()->title('Pembayaran dikonfirmasi!')->success()->send();
-                    }),
-
-                Tables\Actions\Action::make('complete')
-                    ->label('Selesai')
-                    ->icon('heroicon-o-check')
-                    ->color('primary')
-                    ->visible(fn(Booking $r) => $r->status === 'confirmed')
-                    ->requiresConfirmation()
-                    ->action(function (Booking $record) {
-                        (new BookingService())->completeBooking($record);
-                        Notification::make()->title('Booking diselesaikan!')->success()->send();
-                    }),
-
-                Tables\Actions\Action::make('reject')
-                    ->label('Tolak')
-                    ->icon('heroicon-o-x-mark')
-                    ->color('danger')
-                    ->visible(fn(Booking $r) => in_array($r->status, ['pending', 'confirmed']))
-                    ->form([
-                        Forms\Components\Textarea::make('rejection_reason')
-                            ->label('Alasan Penolakan')
-                            ->required()
-                            ->rows(3),
-                    ])
-                    ->action(function (Booking $record, array $data) {
-                        (new BookingService())->rejectBooking($record, $data['rejection_reason']);
-                        Notification::make()->title('Booking ditolak!')->warning()->send();
-                    }),
-
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ]);
     }
 
@@ -168,7 +140,7 @@ class BookingResource extends Resource
     {
         return [
             'index' => Pages\ListBookings::route('/'),
-            'view'  => Pages\ViewBooking::route('/{record}'),
+            'edit'  => Pages\EditBooking::route('/{record}/edit'),
         ];
     }
 }

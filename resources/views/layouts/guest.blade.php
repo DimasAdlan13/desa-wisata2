@@ -7,25 +7,69 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-gradient-to-br from-teal-600 to-blue-800 min-h-screen flex items-center justify-center px-4">
+<body class="antialiased bg-gradient-to-br from-teal-600 to-blue-800 md:bg-none md:bg-gray-50 text-gray-800">
 
-    <div class="w-full max-w-md">
-        <div class="text-center mb-8">
-            <a href="{{ route('home') }}" wire:navigate class="inline-flex flex-col items-center gap-2">
-                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                    <span class="text-teal-700 font-bold text-2xl">DW</span>
+    <div class="w-full flex min-h-screen md:h-screen overflow-hidden">
+        
+        <!-- Bagian Kiri (Hanya muncul di md ke atas) -->
+        <div class="hidden md:flex md:w-1/2 bg-teal-900 relative items-center justify-center">
+            <!-- Background Image -->
+            <img src="https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+                 alt="Island View" 
+                 class="absolute inset-0 w-full h-full object-cover opacity-40">
+                 
+            <!-- Overlay Content -->
+            <div class="relative z-10 px-12 text-white">
+                <a href="{{ route('home') }}" wire:navigate class="inline-flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-teal-700 font-bold text-xl">DW</span>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight">Desa Wisata<br>Kepulauan Seribu</span>
+                </a>
+                
+                <h1 class="text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">Satu Akun<br>Beragam Pesona</h1>
+                <p class="text-lg text-teal-100 max-w-md leading-relaxed">
+                    Nikmati kemudahan eksplorasi berbagai destinasi, layanan, dan paket wisata terbaik kami dalam satu genggaman.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bagian Kanan / Kontainer Utama Mobile -->
+        <div class="w-full max-w-md md:max-w-none px-4 md:px-0 md:w-1/2 flex flex-col md:bg-white lg:bg-gray-50 mx-auto h-screen overflow-y-auto">
+            
+            <div class="w-full md:max-w-md md:p-12 mx-auto my-auto py-10">
+                
+                <!-- Desktop Back Button -->
+                <div class="hidden md:flex mb-6 justify-start">
+                    <a href="{{ route('home') }}" wire:navigate class="text-teal-600 hover:text-teal-700 font-medium text-sm flex items-center gap-1 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Beranda
+                    </a>
                 </div>
-                <span class="text-white font-semibold text-lg">Desa Wisata Kepulauan Seribu</span>
-            </a>
-        </div>
 
-        <div class="bg-white rounded-2xl shadow-2xl p-8">
-            {{ $slot }}
-        </div>
+                <!-- Mobile Logo (Persis seperti aslinya, hanya muncul di mobile) -->
+                <div class="md:hidden text-center mb-8 mt-8">
+                    <a href="{{ route('home') }}" wire:navigate class="inline-flex flex-col items-center gap-2">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-teal-700 font-bold text-2xl">DW</span>
+                        </div>
+                        <span class="text-white font-semibold text-lg">Desa Wisata Kepulauan Seribu</span>
+                    </a>
+                </div>
 
-        <p class="text-center text-teal-200 text-sm mt-6">
-            © {{ date('Y') }} Desa Wisata Kepulauan Seribu
-        </p>
+                <!-- Form Box -->
+                <div class="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-8 md:p-10 w-full">
+                    {{ $slot }}
+                </div>
+
+                <!-- Copyright -->
+                <p class="text-center text-teal-200 md:text-gray-400 text-sm mt-6 md:mt-8 mb-8 md:mb-0">
+                    © {{ date('Y') }} Desa Wisata Kepulauan Seribu
+                </p>
+            </div>
+        </div>
     </div>
 
     @livewireScripts

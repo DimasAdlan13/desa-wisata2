@@ -37,7 +37,12 @@ class ServiceResource extends Resource
                     ->afterStateUpdated(fn($state, Forms\Set $set) =>
                         $set('slug', Str::slug($state) . '-' . Str::random(5))
                     ),
-                Forms\Components\TextInput::make('slug')->label('Slug')->required()->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->readOnly()
+                    ->helperText('Dihasilkan otomatis berdasarkan Nama Layanan.'),
                 Forms\Components\Select::make('category_id')
                     ->label('Kategori')
                     ->options(fn() => \App\Models\ServiceCategory::orderBy('name')->pluck('name', 'id'))
@@ -58,11 +63,25 @@ class ServiceResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('Rp'),
+                Forms\Components\Select::make('pricing_type')
+                    ->label('Tipe Perhitungan Harga')
+                    ->options([
+                        'per_pax' => 'Per Orang (Hitung per kepala)',
+                        'per_unit' => 'Per Unit (Kamar, Kapal, dll)',
+                    ])
+                    ->default('per_pax')
+                    ->required(),
+                Forms\Components\TextInput::make('unit_name')
+                    ->label('Nama Satuan')
+                    ->default('Orang')
+                    ->required()
+                    ->helperText('Satuan yang tampil di layar wisatawan (Contoh: Orang, Kamar, Kapal).'),
                 Forms\Components\TextInput::make('quota_per_day')
-                    ->label('Kuota per Hari (Pax)')
+                    ->label('Kuota / Kapasitas Maksimal per Hari')
                     ->required()
                     ->numeric()
-                    ->default(10),
+                    ->default(10)
+                    ->helperText('Batas maksimal booking dalam 1 hari.'),
                 Forms\Components\TextInput::make('location')
                     ->label('Titik Lokasi / Meeting Point')
                     ->helperText('Titik kumpul atau lokasi tempat layanan berlangsung. Contoh: Dermaga Pulau Pramuka'),
@@ -93,13 +112,33 @@ class ServiceResource extends Resource
                     ->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('Form Dinamis (JSON Schema)')
-                ->description('Definisikan field yang harus diisi user saat booking. Biarkan kosong jika tidak ada form tambahan.')
+            Forms\Components\Section::make('Pertanyaan Tambahan Saat Booking (Opsional)')
+                ->description(new \Illuminate\Support\HtmlString('
+                    <div class="text-sm text-gray-500 mt-1">
+                        <p class="mb-2">Gunakan fitur ini jika Anda butuh info tambahan spesifik dari wisatawan saat mereka memesan layanan ini. Kosongkan jika tidak perlu.</p>
+                    </div>
+                '))
                 ->schema([
-                    Forms\Components\KeyValue::make('form_schema')
-                        ->label('Form Fields')
-                        ->keyLabel('Field Key')
-                        ->valueLabel('Label / Tipe (misal: nama_kapal|text, dibuat_untuk|textarea)')
+                    Forms\Components\Repeater::make('form_schema')
+                        ->label('Daftar Pertanyaan Tambahan')
+                        ->schema([
+                            Forms\Components\TextInput::make('pertanyaan')
+                                ->label('Pertanyaan untuk Wisatawan')
+                                ->placeholder('Contoh: Tema foto yang diinginkan?')
+                                ->required()
+                                ->columnSpan(2),
+                            Forms\Components\Select::make('tipe')
+                                ->label('Tipe Jawaban')
+                                ->options([
+                                    'text' => 'Jawaban Pendek (1 Baris)',
+                                    'textarea' => 'Jawaban Panjang (Paragraf)',
+                                ])
+                                ->default('text')
+                                ->required()
+                                ->columnSpan(1),
+                        ])
+                        ->columns(3)
+                        ->addActionLabel('Tambah Pertanyaan')
                         ->columnSpanFull(),
                 ])
                 ->collapsible(),

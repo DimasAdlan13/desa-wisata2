@@ -32,6 +32,31 @@ class Register extends Component
     public string $businessAddress  = '';
     public string $businessDesc     = '';
 
+    public int $step = 1;
+
+    public function nextStep(): void
+    {
+        $rules = [
+            'name'  => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'role'  => 'required|in:wisatawan,admin_layanan',
+        ];
+
+        if ($this->role === 'wisatawan') {
+            $rules['province'] = 'required|string|max:100';
+            $rules['city']     = 'required|string|max:100';
+        }
+
+        $this->validate($rules);
+        $this->step = 2;
+    }
+
+    public function previousStep(): void
+    {
+        $this->step = 1;
+    }
+
     protected function rules(): array
     {
         $rules = [

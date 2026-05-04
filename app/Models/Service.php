@@ -15,7 +15,7 @@ class Service extends Model
 
     protected $fillable = [
         'user_id', 'category_id', 'name', 'slug', 'description',
-        'price', 'quota_per_day', 'location', 'contact_person',
+        'price', 'pricing_type', 'unit_name', 'quota_per_day', 'location', 'contact_person',
         'form_schema', 'is_approved', 'approved_by', 'approved_at', 'is_active',
     ];
 

@@ -65,8 +65,10 @@
                 <div class="flex justify-between"><span
                         class="text-gray-500">Tanggal</span><span>{{ $booking->booking_date->format('d M Y') }}</span>
                 </div>
-                <div class="flex justify-between"><span class="text-gray-500">Peserta</span><span>{{ $booking->pax }}
-                        orang</span></div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Jumlah</span>
+                    <span>{{ $booking->pax }} {{ strtolower($booking->service->unit_name ?: 'orang') }}</span>
+                </div>
                 <div class="flex justify-between"><span class="text-gray-500">Total</span><span
                         class="font-bold text-teal-700">{{ $booking->formatted_total_price }}</span></div>
                 <div class="flex justify-between items-center">
@@ -82,7 +84,7 @@
 } }}">{{ $booking->status }}</span>
                 </div>
 
-                @if($booking->booking_details)
+                @if($booking->booking_details && collect($booking->booking_details)->except('nomor_wa_pemesan')->isNotEmpty())
                     <div class="pt-3 border-t border-gray-100">
                         <p class="text-gray-600 font-medium mb-2">Detail Pesanan</p>
                         @foreach($booking->booking_details as $key => $value)
@@ -97,9 +99,19 @@
                 @endif
 
                 @if($booking->rejection_reason)
-                    <div class="bg-red-50 border border-red-200 rounded-xl p-3">
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-3 mt-3">
                         <p class="text-red-600 text-xs font-medium">Alasan Penolakan</p>
                         <p class="text-red-700 text-sm mt-1">{{ $booking->rejection_reason }}</p>
+                    </div>
+                @endif
+
+                @if($booking->payment_proof)
+                    <div class="pt-4 mt-2 border-t border-gray-100">
+                        <p class="text-gray-600 font-medium mb-3">Bukti Pembayaran</p>
+                        <a href="{{ Storage::url($booking->payment_proof) }}" target="_blank" class="block rounded-xl overflow-hidden border border-gray-200 hover:opacity-90 transition">
+                            <img src="{{ Storage::url($booking->payment_proof) }}" alt="Bukti Pembayaran" class="w-full h-auto object-cover max-h-64">
+                        </a>
+                        <p class="text-xs text-gray-400 mt-2">*Klik gambar untuk melihat ukuran penuh</p>
                     </div>
                 @endif
             </div>
