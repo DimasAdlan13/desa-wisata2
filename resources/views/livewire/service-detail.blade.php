@@ -92,7 +92,7 @@
                 <div class="bg-white rounded-2xl shadow-lg border border-teal-100 p-6 sticky top-24">
                     <div class="text-center mb-6">
                         <p class="text-sm text-gray-500 mb-1">Harga mulai dari</p>
-                        <h3 class="text-3xl font-extrabold text-teal-700">{{ $service->formatted_price }} <span class="text-sm font-normal text-gray-500">/ orang</span></h3>
+                        <h3 class="text-3xl font-extrabold text-teal-700">{{ $service->formatted_price }} <span class="text-sm font-normal text-gray-500">/ {{ strtolower($service->unit_name ?: 'orang') }}</span></h3>
                     </div>
 
                     <div class="space-y-4 mb-8">
@@ -100,7 +100,7 @@
                             <span class="text-xl">👥</span>
                             <div>
                                 <p class="text-sm text-gray-500">Kuota Maksimal</p>
-                                <p class="font-semibold">{{ $service->quota_per_day }} Pax / hari</p>
+                                <p class="font-semibold">{{ $service->quota_per_day }} {{ $service->unit_name ?: 'Pax' }} / hari</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-3 text-gray-600">

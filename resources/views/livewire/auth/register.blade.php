@@ -22,8 +22,22 @@
 
         <form wire:submit.prevent="register" class="space-y-4">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+            {{-- ==================================== --}}
+            {{--             LANGKAH 1                --}}
+            {{-- ==================================== --}}
+            @if($step === 1)
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md">Langkah 1 dari 2</span>
+                        <span class="text-xs text-gray-500 font-medium">Informasi Dasar</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-teal-500 w-1/2 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                     <input wire:model="name" type="text" placeholder="Nama kamu"
                         class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 @error('name') border-red-300 @enderror">
@@ -142,8 +156,29 @@
                 @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                {{-- Field Password --}}
+                <button type="button" wire:click="nextStep"
+                    class="w-full bg-teal-600 text-white font-bold py-3 mt-4 rounded-xl hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30">
+                    <span wire:loading.remove wire:target="nextStep">Selanjutnya</span>
+                    <span wire:loading wire:target="nextStep">Memeriksa...</span>
+                </button>
+            @endif
+
+            {{-- ==================================== --}}
+            {{--             LANGKAH 2                --}}
+            {{-- ==================================== --}}
+            @if($step === 2)
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md">Langkah 2 dari 2</span>
+                        <span class="text-xs text-gray-500 font-medium">Keamanan Akun</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-teal-500 w-full rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Field Password --}}
                 <div x-data="{ show: false }">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <div class="relative">
@@ -224,12 +259,18 @@
                 </div>
             @endif
 
-            <button type="submit"
-                class="w-full {{ $role === 'admin_layanan' ? 'bg-teal-700 hover:bg-teal-800' : 'bg-teal-600 hover:bg-teal-700' }} text-white font-bold py-3 rounded-xl transition-colors">
-                <span
-                    wire:loading.remove>{{ $role === 'admin_layanan' ? '🤝 Ajukan Pendaftaran Mitra' : 'Daftar Sekarang' }}</span>
-                <span wire:loading>Mendaftarkan...</span>
-            </button>
+                <div class="flex gap-3 mt-6">
+                    <button type="button" wire:click="previousStep"
+                        class="w-1/3 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors">
+                        Kembali
+                    </button>
+                    <button type="submit"
+                        class="w-2/3 {{ $role === 'admin_layanan' ? 'bg-teal-700 hover:bg-teal-800' : 'bg-teal-600 hover:bg-teal-700' }} text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-teal-500/30">
+                        <span wire:loading.remove wire:target="register">{{ $role === 'admin_layanan' ? '🤝 Ajukan Pendaftaran Mitra' : 'Daftar Sekarang' }}</span>
+                        <span wire:loading wire:target="register">Memproses...</span>
+                    </button>
+                </div>
+            @endif
 
             @if($role === 'wisatawan')
                 <p class="text-center text-xs text-gray-400">

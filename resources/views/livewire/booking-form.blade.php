@@ -17,7 +17,7 @@
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Form Booking</h1>
                     <p class="text-teal-700 font-medium">{{ $this->service->name }}</p>
-                    <p class="text-gray-500 text-sm">{{ $this->service->formatted_price }} / orang</p>
+                    <p class="text-gray-500 text-sm">{{ $this->service->formatted_price }} / {{ strtolower($this->service->unit_name ?: 'orang') }}</p>
                 </div>
             </div>
 
@@ -43,13 +43,25 @@
                         @endif
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Peserta (Pax) <span
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah {{ $this->service->unit_name ?: 'Peserta' }} <span
                                 class="text-red-500">*</span></label>
-                        <input wire:model="pax" type="number" min="1" max="{{ $this->service->quota_per_day }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400
+                        <input wire:model.live="pax" type="number" min="1" max="{{ $this->service->quota_per_day }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400
                                       @error('pax') border-red-300 @enderror">
                         @error('pax') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
+
+                {{-- Input Khusus Per Unit (Kamar, Kapal, dll) --}}
+                @if($this->service->pricing_type === 'per_unit')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Peserta Rombongan (Orang) <span
+                                class="text-red-500">*</span></label>
+                        <p class="text-gray-400 text-xs mb-2">Informasi ini tidak mengubah harga, hanya untuk data persiapan admin.</p>
+                        <input wire:model="participant_count" type="number" min="1" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400
+                                      @error('participant_count') border-red-300 @enderror">
+                        @error('participant_count') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+                @endif
 
                 {{-- Nomor WhatsApp --}}
                 <div>
@@ -67,12 +79,18 @@
                 @if($this->service->form_schema)
                     <div class="border-t border-gray-100 pt-4">
                         <h3 class="font-semibold text-gray-700 mb-4">Informasi Tambahan</h3>
-                        @foreach($this->service->form_schema as $fieldKey => $fieldLabel)
+                        @foreach($this->service->form_schema as $field)
+                            @php
+                                if(!isset($field['pertanyaan'])) continue;
+                                $label = $field['pertanyaan'];
+                                $type = $field['tipe'] ?? 'text';
+                                $fieldKey = \Illuminate\Support\Str::slug($label, '_');
+                            @endphp
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    {{ $fieldLabel }} <span class="text-red-500">*</span>
+                                    {{ $label }} <span class="text-red-500">*</span>
                                 </label>
-                                @if(str_contains(strtolower($fieldLabel), 'keterangan') || str_contains(strtolower($fieldLabel), 'catatan'))
+                                @if($type === 'textarea')
                                     <textarea wire:model="dynamicFields.{{ $fieldKey }}" rows="3"
                                         class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400
                                                              @error('dynamicFields.' . $fieldKey) border-red-300 @enderror"></textarea>
@@ -97,7 +115,7 @@
                                 Rp {{ number_format($this->service->price * $pax, 0, ',', '.') }}
                             </span>
                         </div>
-                        <p class="text-teal-500 text-xs mt-1">{{ $pax }} orang × {{ $this->service->formatted_price }}</p>
+                        <p class="text-teal-500 text-xs mt-1">{{ $pax }} {{ $this->service->unit_name ?: 'orang' }} × {{ $this->service->formatted_price }}</p>
                     </div>
                 @endif
 

@@ -19,6 +19,8 @@ class BookingForm extends Component
     // Dynamic fields from form_schema
     public array  $dynamicFields = [];
 
+    public ?int $participant_count = null;
+
     public function mount(Service $service): void
     {
         abort_if(!auth()->user()->isWisatawan(), 403, 'Hanya Wisatawan yang dapat membuat pesanan.');
@@ -27,10 +29,17 @@ class BookingForm extends Component
         // Pre-fill phone dari profil user
         $this->phone = auth()->user()->phone ?? '';
 
-        // Initialize dynamic fields from form_schema
-        if ($service->form_schema) {
-            foreach ($service->form_schema as $key => $label) {
-                $this->dynamicFields[$key] = '';
+        if ($this->service->pricing_type === 'per_unit') {
+            $this->participant_count = 1;
+        }
+
+        // Initialize dynamic fields from form_schema (Repeater array of objects)
+        if ($service->form_schema && is_array($service->form_schema)) {
+            foreach ($service->form_schema as $field) {
+                if (isset($field['pertanyaan'])) {
+                    $key = \Illuminate\Support\Str::slug($field['pertanyaan'], '_');
+                    $this->dynamicFields[$key] = '';
+                }
             }
         }
     }
@@ -42,6 +51,10 @@ class BookingForm extends Component
             'pax'         => ['required', 'integer', 'min:1', 'max:' . $this->service->quota_per_day],
             'phone'       => ['required', 'string', 'max:20'],
         ];
+
+        if ($this->service->pricing_type === 'per_unit') {
+            $rules['participant_count'] = ['required', 'integer', 'min:1'];
+        }
 
         // Dynamic validation: all dynamic fields are required
         foreach ($this->dynamicFields as $key => $_) {
@@ -56,9 +69,11 @@ class BookingForm extends Component
         return [
             'bookingDate.required'        => 'Tanggal wisata wajib dipilih.',
             'bookingDate.after_or_equal'  => 'Tanggal wisata tidak boleh di masa lampau.',
-            'pax.min'                     => 'Minimal 1 orang.',
-            'pax.max'                     => "Maksimal {$this->service->quota_per_day} orang per hari.",
+            'pax.min'                     => 'Minimal 1.',
+            'pax.max'                     => "Maksimal {$this->service->quota_per_day} {$this->service->unit_name} per hari.",
             'phone.required'              => 'Nomor WhatsApp wajib diisi agar admin dapat menghubungi Anda.',
+            'participant_count.required'  => 'Jumlah peserta rombongan wajib diisi.',
+            'participant_count.min'       => 'Minimal 1 orang.',
         ];
     }
 
@@ -86,16 +101,22 @@ class BookingForm extends Component
         $this->validate();
 
         try {
+            $details = array_merge(
+                $this->dynamicFields,
+                ['nomor_wa_pemesan' => $this->phone]
+            );
+
+            if ($this->service->pricing_type === 'per_unit' && $this->participant_count) {
+                $details['jumlah_peserta_rombongan'] = $this->participant_count . ' Orang';
+            }
+
             $booking = (new BookingService())->createBooking(
                 auth()->user(),
                 $this->service,
                 [
                     'booking_date'    => $this->bookingDate,
                     'pax'             => $this->pax,
-                    'booking_details' => array_merge(
-                        $this->dynamicFields,
-                        ['nomor_wa_pemesan' => $this->phone]
-                    ),
+                    'booking_details' => $details,
                 ]
             );
 
