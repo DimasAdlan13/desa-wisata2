@@ -3,7 +3,7 @@
         <!-- Header + Filters -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-2">Layanan Wisata</h1>
-            <p class="text-gray-500">Temukan pengalaman wisata terbaik di Kepulauan Seribu</p>
+            <p class="text-gray-500">Temukan pengalaman wisata terbaik di Pulau Pramuka</p>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
@@ -57,34 +57,34 @@
                         @endif
                     </div>
                 @else
-                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5">
                         @foreach($services as $service)
                         <a href="{{ route('layanan.show', $service->slug) }}" wire:navigate
-                           class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all group">
-                            <div class="h-44 bg-teal-100 overflow-hidden relative">
+                           class="bg-white rounded-xl lg:rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all group">
+                            <div class="h-28 lg:h-44 bg-teal-100 overflow-hidden relative">
                                 @if($service->primaryPhoto)
                                     <img src="{{ Storage::url($service->primaryPhoto->photo_path) }}"
                                          alt="{{ $service->name }}"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center text-teal-300 text-5xl">🏖️</div>
+                                    <div class="w-full h-full flex items-center justify-center text-teal-300 text-3xl lg:text-5xl">🏖️</div>
                                 @endif
-                                <div class="absolute top-3 left-3">
-                                    <span class="bg-white/90 backdrop-blur text-teal-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                                <div class="absolute top-2 left-2 lg:top-3 lg:left-3">
+                                    <span class="bg-white/90 backdrop-blur text-teal-700 text-[10px] lg:text-xs font-medium px-1.5 lg:px-2.5 py-0.5 lg:py-1 rounded-full">
                                         {{ $service->category->name }}
                                     </span>
                                 </div>
                             </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-gray-800 mb-1">{{ $service->name }}</h3>
-                                <p class="text-gray-400 text-sm line-clamp-2 mb-3">{{ strip_tags($service->description) }}</p>
+                            <div class="p-3 lg:p-4">
+                                <h3 class="font-bold text-gray-800 mb-1 text-xs lg:text-base line-clamp-2">{{ $service->name }}</h3>
+                                <p class="text-gray-400 text-[10px] lg:text-sm line-clamp-1 lg:line-clamp-2 mb-2 lg:mb-3">{{ strip_tags($service->description) }}</p>
                                 <div class="flex justify-between items-center">
-                                    <span class="font-bold text-teal-700">{{ $service->formatted_price }}</span>
-                                    <div class="flex items-center gap-1 text-sm text-yellow-500">
+                                    <span class="font-bold text-teal-700 text-xs lg:text-base">{{ $service->formatted_price }}</span>
+                                    <div class="flex items-center gap-1 text-[10px] lg:text-sm text-yellow-500">
                                         ⭐ {{ $service->ratings_avg_rating ? number_format($service->ratings_avg_rating, 1) : 'Baru' }}
                                     </div>
                                 </div>
-                                <p class="text-xs text-gray-400 mt-1">Kuota: {{ $service->quota_per_day }} orang/hari</p>
+                                <p class="text-[10px] lg:text-xs text-gray-400 mt-1 hidden lg:block">Kuota: {{ $service->quota_per_day }} orang/hari</p>
                             </div>
                         </a>
                         @endforeach

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Platform booking layanan wisata Pulau Pramuka, Kepulauan Seribu">
+    <meta name="description" content="Platform booking layanan wisata Pulau Pramuka">
     <title>{{ config('app.name') }} - {{ $title ?? 'Desa Wisata' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -51,7 +51,7 @@
                          :class="scrolled ? 'h-9' : 'h-10'">
                     <div class="hidden sm:block">
                         <span :class="scrolled ? 'text-gray-900' : 'text-gray-800'" class="font-bold text-sm leading-none block transition-colors duration-300">Desa Wisata</span>
-                        <span :class="scrolled ? 'text-teal-600' : 'text-teal-500'" class="text-xs leading-none transition-colors duration-300">Kepulauan Seribu</span>
+                        <span :class="scrolled ? 'text-teal-600' : 'text-teal-500'" class="text-xs leading-none transition-colors duration-300">P. Pramuka</span>
                     </div>
                 </a>
 
@@ -234,8 +234,8 @@
     <footer class="bg-teal-800 text-teal-100 mt-16 py-10">
         <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
             <div>
-                <h3 class="font-bold text-white text-lg mb-2">Desa Wisata Kepulauan Seribu</h3>
-                <p class="text-sm text-teal-200">Platform booking layanan wisata Pulau Pramuka, Kepulauan Seribu, Jakarta.</p>
+                <h3 class="font-bold text-white text-lg mb-2">Desa Wisata Pulau Pramuka</h3>
+                <p class="text-sm text-teal-200">Platform booking layanan wisata Pulau Pramuka, Jakarta.</p>
             </div>
             <div>
                 <h4 class="font-semibold text-white mb-2">Navigasi</h4>
@@ -247,12 +247,12 @@
             </div>
             <div>
                 <h4 class="font-semibold text-white mb-2">Kontak</h4>
-                <p class="text-sm">📍 Pulau Pramuka, Kepulauan Seribu</p>
+                <p class="text-sm">📍 Pulau Pramuka, Jakarta</p>
                 <p class="text-sm">📧 info@desawisataseribu.id</p>
             </div>
         </div>
         <div class="text-center text-sm text-teal-300 mt-8 pt-4 border-t border-teal-700">
-            © {{ date('Y') }} Desa Wisata Kepulauan Seribu. All rights reserved.
+            © {{ date('Y') }} Desa Wisata Pulau Pramuka. All rights reserved.
         </div>
     </footer>
 

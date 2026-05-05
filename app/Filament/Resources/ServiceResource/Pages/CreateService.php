@@ -12,6 +12,19 @@ class CreateService extends CreateRecord
     protected static string $resource = ServiceResource::class;
 
     /**
+     * Filament v3: override getFormActions() — inilah yang benar-benar
+     * mengontrol render tombol di footer form Create.
+     * Hapus "Create & create another" agar Admin Layanan tidak bingung.
+     */
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getCreateFormAction()->label('Simpan Layanan'),
+            $this->getCancelFormAction()->label('Batal'),
+        ];
+    }
+
+    /**
      * Inject user_id otomatis untuk Admin Layanan
      * (field ini di-hide dari view admin layanan, hanya Super Admin yang bisa lihat & isi sendiri)
      */

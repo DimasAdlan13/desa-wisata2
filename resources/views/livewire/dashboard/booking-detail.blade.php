@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ showCancelModal: false }">
     <div class="max-w-2xl mx-auto px-4 py-12">
         <div class="mb-6">
             <a href="{{ route('dashboard') }}" wire:navigate class="text-sm text-teal-600 hover:underline">← Kembali ke
@@ -119,7 +119,7 @@
             {{-- Tombol Batalkan (hanya jika pending) --}}
             @if($booking->isPending())
                 <div class="mt-8 border-t border-gray-100 pt-6">
-                    <button wire:click="cancelBooking" wire:confirm="Apakah kamu yakin ingin membatalkan booking ini?"
+                    <button @click="showCancelModal = true"
                         class="text-red-500 text-sm hover:underline">
                         Batalkan Booking
                     </button>
@@ -127,4 +127,68 @@
             @endif
         </div>
     </div>
+
+    {{-- ====================================================
+         CUSTOM CANCEL CONFIRMATION MODAL
+    ==================================================== --}}
+    <div
+        x-show="showCancelModal"
+        x-transition:enter="ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @keydown.escape.window="showCancelModal = false"
+        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        style="display: none;"
+    >
+        {{-- Backdrop --}}
+        <div
+            class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            @click="showCancelModal = false"
+        ></div>
+
+        {{-- Modal Card --}}
+        <div
+            x-show="showCancelModal"
+            x-transition:enter="ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center z-10"
+        >
+            {{-- Icon --}}
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Batalkan Booking?</h3>
+            <p class="text-gray-500 text-sm mb-6">
+                Tindakan ini <span class="font-semibold text-red-500">tidak dapat dibatalkan</span>. Booking Anda akan dibatalkan secara permanen.
+            </p>
+
+            <div class="flex gap-3">
+                <button
+                    @click="showCancelModal = false"
+                    class="w-1/2 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                    Tidak, Kembali
+                </button>
+                <button
+                    wire:click="cancelBooking"
+                    @click="showCancelModal = false"
+                    class="w-1/2 py-3 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 transition-colors"
+                >
+                    <span wire:loading.remove wire:target="cancelBooking">Ya, Batalkan</span>
+                    <span wire:loading wire:target="cancelBooking">Memproses...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
