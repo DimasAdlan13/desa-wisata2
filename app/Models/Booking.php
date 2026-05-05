@@ -35,11 +35,33 @@ class Booking extends Model
     const STATUS_REJECTED  = 'rejected';
 
     // ─── Auto-generate booking_code on create ────────────────────────
+    // ─── Auto-complete booking setelah booking_date + 1 hari ────────
     protected static function booted(): void
     {
         static::creating(function (self $booking) {
             if (empty($booking->booking_code)) {
                 $booking->booking_code = self::generateCode();
+            }
+        });
+
+        /**
+         * Event "retrieved" — dipanggil setiap kali data booking diambil dari DB.
+         *
+         * Logic: Jika status masih "confirmed" DAN booking_date sudah lewat 1 hari,
+         * otomatis ubah status menjadi "completed".
+         *
+         * Contoh: booking_date = 5 Mei → 6 Mei jam 00:01 → status jadi completed.
+         *
+         * updateQuietly() digunakan agar TIDAK memicu event "updating/updated"
+         * yang bisa menyebabkan loop tak terbatas.
+         */
+        static::retrieved(function (self $booking) {
+            if (
+                $booking->status === self::STATUS_CONFIRMED
+                && $booking->booking_date
+                && $booking->booking_date->addDay()->isPast()
+            ) {
+                $booking->updateQuietly(['status' => self::STATUS_COMPLETED]);
             }
         });
     }

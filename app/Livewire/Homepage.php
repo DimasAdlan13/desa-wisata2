@@ -21,7 +21,7 @@ class Homepage extends Component
 
         $categories = ServiceCategory::active()->withCount(['services' => fn($q) => $q->approved()->active()])->get();
 
-        $latestContents = Content::published()->latest()->take(3)->get();
+        $latestContents = Content::published()->latest()->take(4)->get();
 
         $stats = [
             'total_services'  => Service::public()->count(),

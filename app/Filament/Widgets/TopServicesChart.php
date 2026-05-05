@@ -28,9 +28,14 @@ class TopServicesChart extends ChartWidget
         $serviceId = $this->filters['service_id'] ?? null;
         $user = auth()->user();
 
-        // Ambil top 5 layanan yang paling banyak dibooking
+        // Ambil top 5 layanan — hitung booking yang RELEVAN (pending, confirmed, completed)
+        // Sengaja TIDAK hitung yang cancelled / rejected
         $query = Service::query()
-            ->withCount('bookings')
+            ->withCount([
+                'bookings as bookings_count' => function ($q) {
+                    $q->whereIn('status', ['pending', 'confirmed', 'completed']);
+                }
+            ])
             ->orderByDesc('bookings_count')
             ->take(5);
 
@@ -47,15 +52,31 @@ class TopServicesChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Booking Masuk',
+                    'label' => 'Booking Masuk (Pending + Confirmed + Completed)',
                     'data' => $services->pluck('bookings_count')->toArray(),
-                    'backgroundColor' => 'rgba(249, 115, 22, 0.8)', // Orange
+                    'backgroundColor' => 'rgba(249, 115, 22, 0.8)',
                     'borderColor' => '#f97316',
                     'borderRadius' => 4,
                 ],
             ],
             'labels' => $services->pluck('name')->map(fn($name) => \Illuminate\Support\Str::limit($name, 15))->toArray(),
         ];
+    }
+
+    public function getDescription(): ?string
+    {
+        $user = auth()->user();
+
+        $query = \App\Models\Booking::query()
+            ->whereIn('status', ['pending', 'confirmed', 'completed']);
+
+        if ($user->isAdminLayanan()) {
+            $query->whereHas('service', fn($q) => $q->where('user_id', $user->id));
+        }
+
+        $total = $query->count();
+
+        return 'Total Booking Masuk: ' . number_format($total, 0, ',', '.') . ' booking';
     }
 
     protected function getType(): string

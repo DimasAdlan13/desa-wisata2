@@ -109,7 +109,7 @@ class ServiceDetail extends Component
                 return $service;
             })
             ->sortByDesc('similarity_score')
-            ->take(4)
+            ->take(6)
             ->values();
     }
 
