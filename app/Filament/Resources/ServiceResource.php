@@ -101,6 +101,15 @@ class ServiceResource extends Resource
                         Forms\Components\FileUpload::make('photo_path')
                             ->label('Foto')
                             ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->imageResizeMode('cover')
+                            ->imageResizeTargetWidth('1280')
+                            ->imageResizeTargetHeight('720')
                             ->maxSize(2048)
                             ->disk('public')
                             ->directory('services')

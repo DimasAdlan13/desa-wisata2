@@ -49,6 +49,16 @@ class ContentResource extends Resource
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Foto Cover')
                     ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ])
+                    ->imageResizeMode('cover')
+                    ->imageResizeTargetWidth('1280')
+                    ->imageResizeTargetHeight('720')
+                    ->maxSize(2048)
                     ->disk('public')
                     ->directory('contents'),
                 Forms\Components\Toggle::make('is_published')
