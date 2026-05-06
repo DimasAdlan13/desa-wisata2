@@ -179,6 +179,89 @@
         <div class="h-1 w-full bg-gradient-to-r from-transparent via-teal-500 to-transparent"></div>
     </div>
 
+    <!-- Info Wisata Section -->
+    @if($infoWisata->isNotEmpty())
+    <section class="bg-white py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-3">
+                <div>
+                    <span class="inline-block bg-teal-50 text-teal-600 text-xs font-bold px-3 py-1 rounded-full border border-teal-200 uppercase tracking-widest mb-3">Panduan Wisata</span>
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-gray-900">Info Wisata <span class="text-teal-600">Pulau Pramuka</span></h2>
+                    <p class="text-gray-400 text-sm mt-1">Panduan lengkap sebelum Anda berkunjung</p>
+                </div>
+                <a href="{{ route('konten.index', ['type' => 'info_wisata']) }}" wire:navigate
+                   class="inline-flex items-center gap-1.5 text-teal-600 font-semibold text-sm hover:text-teal-800 transition-colors shrink-0">
+                    Semua Info Wisata
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <!-- Bento Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+                {{-- Featured (large card, spans 3 cols) --}}
+                @if($infoWisata->first())
+                @php $featured = $infoWisata->first(); @endphp
+                <a href="{{ route('konten.show', $featured->slug) }}" wire:navigate
+                   class="lg:col-span-3 group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all min-h-[320px] lg:min-h-[400px] block">
+                    @if($featured->cover_image)
+                        <img src="{{ Storage::url($featured->cover_image) }}"
+                             alt="{{ $featured->title }}"
+                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-teal-500 to-blue-600"></div>
+                    @endif
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                    <div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-8 z-10">
+                        <span class="inline-flex items-center gap-1.5 bg-teal-400/90 backdrop-blur text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-3">
+                            🗺️ Info Wisata
+                        </span>
+                        <h3 class="text-white font-extrabold text-xl lg:text-2xl leading-tight mb-2 line-clamp-3 group-hover:text-teal-200 transition-colors">
+                            {{ $featured->title }}
+                        </h3>
+                        <div class="flex items-center gap-3 text-white/70 text-xs">
+                            <span>📅 {{ $featured->published_at?->format('d M Y') }}</span>
+                            <span>·</span>
+                            <span>⏱ {{ ceil(str_word_count(strip_tags($featured->body ?? '')) / 200) }} menit baca</span>
+                        </div>
+                    </div>
+                </a>
+                @endif
+
+                {{-- Small cards (spans 2 cols, stacked) --}}
+                <div class="lg:col-span-2 flex flex-col gap-4">
+                    @foreach($infoWisata->skip(1)->take(3) as $item)
+                    <a href="{{ route('konten.show', $item->slug) }}" wire:navigate
+                       class="group flex gap-4 bg-gray-50 hover:bg-teal-50 border border-gray-100 hover:border-teal-200 rounded-2xl p-4 transition-all">
+                        <div class="shrink-0 w-20 h-20 lg:w-24 lg:h-24 rounded-xl overflow-hidden bg-teal-100">
+                            @if($item->cover_image)
+                                <img src="{{ Storage::url($item->cover_image) }}"
+                                     alt="{{ $item->title }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-teal-400 text-2xl">🗺️</div>
+                            @endif
+                        </div>
+                        <div class="flex flex-col justify-center min-w-0">
+                            <h4 class="font-bold text-gray-800 text-sm line-clamp-2 group-hover:text-teal-700 transition-colors leading-snug mb-1.5">
+                                {{ $item->title }}
+                            </h4>
+                            <div class="flex items-center gap-2 text-gray-400 text-xs">
+                                <span>📅 {{ $item->published_at?->format('d M Y') }}</span>
+                            </div>
+                        </div>
+                        <div class="shrink-0 self-center ml-auto text-gray-300 group-hover:text-teal-500 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- Featured Services -->
     <section class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto px-4">
@@ -220,6 +303,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Latest Content -->
     @if($latestContents->isNotEmpty())
@@ -303,7 +387,7 @@
 
             <a href="{{ route('register') }}?role=admin_layanan" wire:navigate
                 class="inline-block bg-yellow-400 text-teal-900 font-extrabold px-6 sm:px-10 py-3 sm:py-4 rounded-xl hover:bg-yellow-300 transition-all shadow-lg text-sm sm:text-lg transform hover:-translate-y-1">
-                🤝 Daftar sebagai Mitra Sekarang
+                Daftar sebagai Mitra Sekarang
             </a>
             <p class="text-teal-600 text-xs sm:text-sm mt-3 sm:mt-4">Gratis — Tidak ada biaya pendaftaran</p>
         </div>

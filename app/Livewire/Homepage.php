@@ -23,6 +23,12 @@ class Homepage extends Component
 
         $latestContents = Content::published()->latest()->take(4)->get();
 
+        $infoWisata = Content::published()
+            ->where('type', 'info_wisata')
+            ->latest()
+            ->take(4)
+            ->get();
+
         $stats = [
             'total_services'  => Service::public()->count(),
             'total_bookings'  => \App\Models\Booking::where('status', 'completed')->count(),
@@ -30,7 +36,7 @@ class Homepage extends Component
             'total_wisatawan' => \App\Models\User::where('role', 'wisatawan')->count(),
         ];
 
-        return view('livewire.homepage', compact('featuredServices', 'categories', 'latestContents', 'stats'))
+        return view('livewire.homepage', compact('featuredServices', 'categories', 'latestContents', 'infoWisata', 'stats'))
             ->layout('layouts.app');
     }
 }
