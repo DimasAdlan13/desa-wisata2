@@ -12,6 +12,10 @@ class TopServicesChart extends ChartWidget
 
     protected static ?string $heading = 'Tren Layanan (Paling Banyak Dipesan)';
     protected static ?int $sort = 4;
+    protected int | string | array $columnSpan = [
+        'default' => 'full',
+        'md' => 1,
+    ];
 
     public function render(): \Illuminate\Contracts\View\View
     {

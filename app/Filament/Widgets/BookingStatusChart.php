@@ -12,6 +12,10 @@ class BookingStatusChart extends ChartWidget
 
     protected static ?string $heading = 'Booking Status Breakdown';
     protected static ?int $sort = 5;
+    protected int | string | array $columnSpan = [
+        'default' => 'full',
+        'md' => 1,
+    ];
     protected static ?string $maxHeight = '250px'; // <-- Membatasi tinggi agar senada dengan grafik lain
 
     protected function getData(): array

@@ -18,11 +18,12 @@ class Content extends Model
 
     protected $fillable = [
         'title', 'slug', 'body', 'type', 'cover_image',
-        'is_published', 'published_at',
+        'is_published', 'published_at', 'is_featured',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_featured'  => 'boolean',
         'published_at' => 'datetime',
     ];
 

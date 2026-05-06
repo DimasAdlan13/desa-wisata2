@@ -9,7 +9,10 @@ class VisitorOriginChart extends ChartWidget
 {
     protected static ?string $heading = 'Asal Daerah Wisatawan';
     protected static ?int $sort = 6;
-    protected int | string | array $columnSpan = 2;
+    protected int | string | array $columnSpan = [
+        'default' => 'full',
+        'md' => 2,
+    ];
 
     /**
      * Hanya Super Admin yang bisa melihat widget ini.

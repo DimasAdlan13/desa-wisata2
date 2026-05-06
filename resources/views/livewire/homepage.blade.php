@@ -82,7 +82,7 @@
             <div class="animate-fade-in-up">
                 <span
                     class="inline-block bg-teal-50 text-teal-600 text-xs font-bold px-4 py-1.5 rounded-full border border-teal-200 uppercase tracking-widest mb-5">
-                    🏝️ Dikelola Langsung Oleh Warga Lokal
+                    Dikelola Langsung Oleh Warga Lokal
                 </span>
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-5">
                     Jelajahi Keindahan<br>
@@ -319,6 +319,8 @@
                                     <img src="{{ Storage::url($content->cover_image) }}" loading="lazy" alt="{{ $content->title }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </div>
+                            @else
+                                <div class="h-24 lg:h-40 bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white text-3xl lg:text-5xl">📄</div>
                             @endif
                             <div class="p-3 lg:p-5">
                                 <span

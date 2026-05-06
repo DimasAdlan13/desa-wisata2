@@ -17,8 +17,11 @@ class RecentReviewsWidget extends BaseWidget
     protected static ?int $sort = 6;
     public function getColumnSpan(): int | string | array
     {
-        // 1 kolom jika difilter, full kolom jika di menu 'Semua Layanan'
-        return !empty($this->filters['service_id']) ? 1 : 'full';
+        // 1 kolom di desktop jika difilter, full kolom di mobile atau jika di menu 'Semua Layanan'
+        return !empty($this->filters['service_id']) ? [
+            'default' => 'full',
+            'md' => 1,
+        ] : 'full';
     }
 
     public function table(Table $table): Table
