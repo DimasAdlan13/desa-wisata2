@@ -34,7 +34,9 @@ class ServiceCategoryResource extends Resource
             Forms\Components\TextInput::make('slug')
                 ->label('Slug')
                 ->required()
-                ->unique(ignoreRecord: true),
+                ->unique(ignoreRecord: true)
+                ->readOnly()
+                ->helperText('Dihasilkan otomatis berdasarkan Nama Kategori.'),
 
             Forms\Components\TextInput::make('icon')
                 ->label('Icon (Heroicon name)')

@@ -13,6 +13,10 @@ class BookingPerMonthChart extends ChartWidget
 
     protected static ?string $heading = 'Tren Booking (12 Bulan Terakhir)';
     protected static ?int $sort = 3;
+    protected int | string | array $columnSpan = [
+        'default' => 'full',
+        'md' => 1,
+    ];
 
     protected function getData(): array
     {

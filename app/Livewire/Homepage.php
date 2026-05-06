@@ -25,6 +25,7 @@ class Homepage extends Component
 
         $infoWisata = Content::published()
             ->where('type', 'info_wisata')
+            ->orderByDesc('is_featured') // yang is_featured=true naik ke atas
             ->latest()
             ->take(4)
             ->get();

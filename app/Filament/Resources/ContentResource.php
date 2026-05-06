@@ -30,15 +30,22 @@ class ContentResource extends Resource
                     ->afterStateUpdated(fn($state, Forms\Set $set) =>
                         $set('slug', Str::slug($state) . '-' . Str::random(5))
                     ),
-                Forms\Components\TextInput::make('slug')->label('Slug')->required()->unique(ignoreRecord: true),
-                Forms\Components\Select::make('type')
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->readOnly()
+                    ->helperText('Dihasilkan otomatis berdasarkan Judul konten.'),
+                Forms\Components\TextInput::make('type')
                     ->label('Tipe Konten')
-                    ->options([
-                        'umkm'       => 'UMKM',
-                        'kuliner'    => 'Kuliner',
-                        'info_wisata'=> 'Info Wisata',
+                    ->required()
+                    ->datalist([
+                        'umkm',
+                        'kuliner',
+                        'info_wisata',
                     ])
-                    ->required(),
+                    ->placeholder('Pilih atau ketik tipe baru...')
+                    ->helperText('Contoh: umkm, kuliner, info_wisata, berita, event, galeri, dll.'),
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Foto Cover')
                     ->image()
@@ -50,6 +57,10 @@ class ContentResource extends Resource
                     ->afterStateUpdated(fn($state, Forms\Set $set) =>
                         $set('published_at', $state ? now()->toDateTimeLocalString() : null)
                     ),
+                Forms\Components\Toggle::make('is_featured')
+                    ->label('Unggulan di Homepage')
+                    ->helperText('Jadikan artikel ini sebagai konten utama (besar) di section Info Wisata homepage.')
+                    ->visible(fn(Forms\Get $get) => $get('type') === 'info_wisata'),
                 Forms\Components\DateTimePicker::make('published_at')
                     ->label('Tanggal Publish')
                     ->visible(fn(Forms\Get $get) => $get('is_published')),
@@ -77,6 +88,11 @@ class ContentResource extends Resource
                         'warning' => 'kuliner',
                         'info'    => 'info_wisata',
                     ]),
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Unggulan')
+                    ->boolean()
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
                 Tables\Columns\IconColumn::make('is_published')->label('Publish')->boolean(),
                 Tables\Columns\TextColumn::make('published_at')->label('Tgl Publish')->date('d/m/Y'),
                 Tables\Columns\TextColumn::make('created_at')->label('Dibuat')->date('d/m/Y')->sortable(),
