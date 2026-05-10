@@ -11,6 +11,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 class ContentResource extends Resource
 {
     protected static ?string $model = Content::class;
@@ -58,6 +63,18 @@ class ContentResource extends Resource
                     ->imageResizeMode('cover')
                     ->imageResizeTargetWidth('1280')
                     ->imageResizeTargetHeight('720')
+                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
+                        $manager = new ImageManager(new Driver());
+                        $filename = Str::random(40) . '.webp';
+                        $path = 'contents/' . $filename;
+
+                        $image = $manager->read($file->getRealPath());
+                        $encoded = $image->toWebp(75);
+
+                        Storage::disk('public')->put($path, (string) $encoded);
+
+                        return $path;
+                    })
                     ->maxSize(2048)
                     ->disk('public')
                     ->directory('contents'),

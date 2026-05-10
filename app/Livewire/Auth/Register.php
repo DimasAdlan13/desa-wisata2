@@ -36,6 +36,17 @@ class Register extends Component
 
     public function nextStep(): void
     {
+        // Pasang satpam di sini juga
+        $throttleKey = 'register|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('email', "Terlalu banyak percobaan. Tunggu $seconds detik.");
+            return;
+        }
+
+        // TAMBAHKAN BARIS INI: Catat ketukan pintu
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $rules = [
             'name'  => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
@@ -82,7 +93,19 @@ class Register extends Component
 
     public function register(): void
     {
+        // Tentukan kunci unik berdasarkan IP untuk mencegah spam pendaftaran
+        $throttleKey = 'register|' . request()->ip();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('email', "Terlalu banyak percobaan pendaftaran. Silakan coba lagi dalam $seconds detik.");
+            return;
+        }
+
         $this->validate();
+
+        // Catat hit setiap kali melewati validasi (baik di nextStep atau register)
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         $user = User::create([
             'name'                 => $this->name,

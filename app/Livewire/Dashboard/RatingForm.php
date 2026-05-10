@@ -9,8 +9,8 @@ use Livewire\Component;
 class RatingForm extends Component
 {
     public Booking $booking;
-    public int     $rating = 5;
-    public string  $review = '';
+    public int $rating = 5;
+    public string $review = '';
 
     protected $rules = [
         'rating' => 'required|integer|min:1|max:5',
@@ -32,14 +32,26 @@ class RatingForm extends Component
 
     public function submit(): void
     {
+        // Pasang Satpam: Cegah spam ulasan (Maksimal 2 ulasan per menit)
+        $throttleKey = 'rating|' . auth()->id();
+
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 2)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('review', "Anda mengirim ulasan terlalu cepat. Tunggu $seconds detik.");
+            return;
+        }
+
+        // Catat setiap pengiriman ulasan SEBELUM validasi
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         Rating::create([
             'booking_id' => $this->booking->id,
-            'user_id'    => auth()->id(),
+            'user_id' => auth()->id(),
             'service_id' => $this->booking->service_id,
-            'rating'     => $this->rating,
-            'review'     => $this->review,
+            'rating' => $this->rating,
+            'review' => $this->review,
         ]);
 
         session()->flash('success', 'Terima kasih atas ulasan Anda!');
