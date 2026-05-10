@@ -127,7 +127,7 @@ class Register extends Component
             // Hapus url.intended — user baru tidak punya booking,
             // jangan diarahkan ke URL sesi browser lama yang bisa milik user lain
             session()->forget('url.intended');
-            $this->redirect(route('dashboard'), navigate: true);
+            $this->redirect(route('home'), navigate: true);
 
         } else {
             // admin_layanan → notify all super admins

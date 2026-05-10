@@ -12,8 +12,9 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             ServiceCategorySeeder::class,
             ContentSeeder::class,
-            AdminLayananSeeder::class,   // Buat akun admin pemilik layanan
-            ServiceSeeder::class,        // Buat data layanan wisata
+            AdminLayananSeeder::class,      // Buat akun admin pemilik layanan
+            ServiceSeeder::class,           // Buat data layanan wisata
+            WisatawanRatingSeeder::class,   // Buat wisatawan + booking + rating untuk SAW
         ]);
     }
 }
