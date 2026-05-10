@@ -13,6 +13,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\Str;
+
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
@@ -60,6 +66,18 @@ class BookingResource extends Resource
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageResizeTargetWidth('800')
+                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
+                        $manager = new ImageManager(new Driver());
+                        $filename = Str::random(40) . '.webp';
+                        $path = 'payment-proofs/' . $filename;
+
+                        $image = $manager->read($file->getRealPath());
+                        $encoded = $image->toWebp(75);
+
+                        Storage::disk('public')->put($path, (string) $encoded);
+
+                        return $path;
+                    })
                     ->maxSize(2048)
                     ->disk('public')
                     ->directory('payment-proofs')

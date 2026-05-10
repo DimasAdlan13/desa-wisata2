@@ -37,7 +37,7 @@ Route::get('/api/wilayah/regencies/{provinceId}', function (string $provinceId) 
 
     return response()->json($data)
         ->header('Cache-Control', 'public, max-age=86400');
-})->name('wilayah.regencies');
+})->name('wilayah.regencies')->middleware('throttle:10,1');
 
 
 // ─── Auth Routes ─────────────────────────────────────────────────────────────

@@ -22,7 +22,7 @@
             <!-- Overlay Content -->
             <div class="relative z-10 px-12 text-white">
                 <a href="{{ route('home') }}" wire:navigate class="inline-flex items-center gap-3 mb-8">
-                    <img src="{{ asset('images/logo 1.png') }}" alt="Logo Desa Wisata" class="w-12 h-12 object-contain">
+                    <img src="{{ asset('images/logo.webp') }}" alt="Logo Desa Wisata" class="w-12 h-12 object-contain">
                     <span class="font-bold text-2xl tracking-tight">Desa Wisata<br>Pulau Pramuka</span>
                 </a>
 

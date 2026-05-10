@@ -98,6 +98,18 @@ class BookingForm extends Component
 
     public function submit(): void
     {
+        // Pasang Satpam: Cegah spam booking (Maksimal 3 booking per menit)
+        $throttleKey = 'booking|' . auth()->id() . '|' . request()->ip();
+        
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('bookingDate', "Terlalu banyak permintaan pemesanan. Tunggu $seconds detik.");
+            return;
+        }
+
+        // Catat setiap percobaan pemesanan SEBELUM validasi
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         try {

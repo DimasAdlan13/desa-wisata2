@@ -8,12 +8,12 @@ use Livewire\Component;
 
 class Login extends Component
 {
-    public string $email    = '';
+    public string $email = '';
     public string $password = '';
-    public bool   $remember = false;
+    public bool $remember = false;
 
     protected $rules = [
-        'email'    => 'required|email',
+        'email' => 'required|email',
         'password' => 'required|string',
     ];
 
@@ -21,10 +21,26 @@ class Login extends Component
     {
         $this->validate();
 
+        // Tentukan kunci unik (Email + IP) untuk melacak percobaan login
+        $throttleKey = strtolower($this->email) . '|' . request()->ip();
+
+        // Cek apakah user sudah melampaui batas percobaan (misal 5 kali)
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('email', "Terlalu banyak percobaan login. Silakan coba lagi dalam $seconds detik.");
+            return;
+        }
+
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            // Jika gagal, catat satu kali percobaan (hit)
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey);
+            
             $this->addError('email', 'Email atau password salah.');
             return;
         }
+
+        // Jika berhasil, bersihkan catatan kegagalan agar user bisa login normal lagi nanti
+        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
 
         $user = Auth::user();
 
@@ -44,8 +60,8 @@ class Login extends Component
 
         $this->redirect(
             $user->isSuperAdmin() || $user->isAdminLayanan()
-                ? '/admin'
-                : $intendedUrl,
+            ? '/admin'
+            : $intendedUrl,
             navigate: true
         );
     }

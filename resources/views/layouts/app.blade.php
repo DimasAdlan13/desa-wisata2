@@ -45,7 +45,7 @@
 
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 flex-shrink-0" wire:navigate>
-                    <img src="{{ asset('images/logo 1.png') }}"
+                    <img src="{{ asset('images/logo.webp') }}"
                          alt="Logo Desa Wisata"
                          class="h-10 w-auto transition-all duration-300 drop-shadow-sm"
                          :class="scrolled ? 'h-9' : 'h-10'">
