@@ -202,7 +202,7 @@
 
                 {{-- Field Konfirmasi Password --}}
                 <div x-data="{ show: false }">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1 truncate" title="Konfirmasi Password">Konfirmasi Password</label>
                     <div class="relative">
                         <input wire:model="passwordConfirm"
                                :type="show ? 'text' : 'password'"
