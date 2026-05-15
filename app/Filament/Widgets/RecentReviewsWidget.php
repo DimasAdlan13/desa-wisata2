@@ -15,6 +15,7 @@ class RecentReviewsWidget extends BaseWidget
 
     protected static ?string $heading = 'Ulasan Pelanggan Terbaru';
     protected static ?int $sort = 6;
+    protected static bool $isLazy = false; // Paksa mount sejak awal agar filter langsung bisa bekerja
     public function getColumnSpan(): int | string | array
     {
         // 1 kolom di desktop jika difilter, full kolom di mobile atau jika di menu 'Semua Layanan'
@@ -26,21 +27,23 @@ class RecentReviewsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        $serviceId = $this->filters['service_id'] ?? null;
-        $user = auth()->user();
-
-        $query = Rating::query()->latest();
-
-        if ($user->isAdminLayanan()) {
-            $query->whereHas('service', fn($q) => $q->where('user_id', $user->id));
-        }
-
-        if ($serviceId) {
-            $query->where('service_id', $serviceId);
-        }
-
         return $table
-            ->query($query)
+            ->query(function (): Builder {
+                $serviceId = $this->filters['service_id'] ?? null;
+                $user = auth()->user();
+
+                $query = Rating::query()->latest();
+
+                if ($user->isAdminLayanan()) {
+                    $query->whereHas('service', fn($q) => $q->where('user_id', $user->id));
+                }
+
+                if ($serviceId) {
+                    $query->where('service_id', $serviceId);
+                }
+
+                return $query;
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('booking.user.name')
                     ->label('Wisatawan')
@@ -48,7 +51,7 @@ class RecentReviewsWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('service.name')
                     ->label('Layanan')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: $serviceId !== null),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('rating')
                     ->label('Rating')
                     ->badge()

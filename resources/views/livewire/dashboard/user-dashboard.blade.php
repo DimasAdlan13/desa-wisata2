@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="mt-3">
                                     <a href="{{ route('dashboard.booking', $booking) }}" wire:navigate
-                                       class="text-sm text-teal-600 hover:underline font-medium">Lihat Detail & Upload Bukti Bayar →</a>
+                                       class="text-sm text-teal-600 hover:underline font-medium">Lihat Detail →</a>
                                 </div>
                             </div>
                         </div>
