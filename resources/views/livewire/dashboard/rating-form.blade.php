@@ -42,7 +42,7 @@
 
                 <button type="submit"
                         class="w-full bg-yellow-400 text-yellow-900 font-bold py-3 rounded-xl hover:bg-yellow-300 transition-colors">
-                    <span wire:loading.remove>⭐ Kirim Rating</span>
+                    <span wire:loading.remove> Kirim Rating</span>
                     <span wire:loading>Menyimpan...</span>
                 </button>
             </form>
