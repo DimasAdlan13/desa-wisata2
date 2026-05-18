@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                         <input wire:model="name" type="text" placeholder="Nama kamu"
@@ -114,7 +114,7 @@
                                                         $wire.set('province', this.selectedProvinceName);
                                                         $wire.set('city', name);
                                                     }
-                                                }" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                }" class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Provinsi Asal <span class="text-red-500">*</span>
@@ -179,7 +179,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     {{-- Field Password --}}
                     <div x-data="{ show: false }">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>

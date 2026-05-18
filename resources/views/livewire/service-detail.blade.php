@@ -142,7 +142,7 @@
 
                             <a href="{{ route('booking.create', $service->slug) }}" wire:navigate
                                 class="block w-full text-center bg-yellow-400 text-yellow-900 font-bold px-6 py-4 rounded-xl hover:bg-yellow-300 transition-colors shadow-md transform hover:-translate-y-1">
-                                🎫 Booking Sekarang
+                                Booking Sekarang
                             </a>
                         @else
                             <div class="bg-blue-50 text-blue-800 px-4 py-3 rounded-xl text-center text-sm font-medium">

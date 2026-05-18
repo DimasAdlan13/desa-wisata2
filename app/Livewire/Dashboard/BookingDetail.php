@@ -20,8 +20,15 @@ class BookingDetail extends Component
     public function cancelBooking(): void
     {
         abort_if(!$this->booking->isPending(), 403);
+
         (new BookingService())->cancelBooking($this->booking);
         $this->booking->refresh();
+
+        // Kirim notifikasi ke Admin Layanan pemilik layanan
+        $adminLayanan = $this->booking->service->user;
+        if ($adminLayanan) {
+            $adminLayanan->notify(new \App\Notifications\BookingCancelledNotification($this->booking));
+        }
 
         session()->flash('success', 'Booking berhasil dibatalkan.');
     }
