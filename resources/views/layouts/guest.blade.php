@@ -16,7 +16,7 @@
         <!-- Bagian Kiri (Hanya muncul di md ke atas) -->
         <div class="hidden md:flex md:w-1/2 bg-teal-900 relative items-center justify-center">
             <!-- Background Image -->
-            <img src="https://images.unsplash.com/photo-1544550581-5f7ceaf7f992?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+            <img src="{{ asset('images/wisata_pulau_pramuka_e4ddfe0849.webp') }}"
                 alt="Island View" class="absolute inset-0 w-full h-full object-cover opacity-40">
 
             <!-- Overlay Content -->
