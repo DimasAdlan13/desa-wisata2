@@ -43,17 +43,10 @@ class ServiceDetail extends Component
      */
     protected function getSimilarServices(): \Illuminate\Support\Collection
     {
-        // =========================================================
-        // ✏️  GANTI NILAI INI SETELAH KUESIONER AHP SELESAI
-        //     Total ketiga bobot HARUS = 1.0 (100%)
-        //
-        //     Contoh jika hasil AHP:
-        //       Kategori = 0.60, Harga = 0.25, Rating = 0.15
-        // =========================================================
-        $bobotKategori = 0.43; // ← GANTI dengan bobot AHP kriteria Kategori
-        $bobotHarga = 0.37; // ← GANTI dengan bobot AHP kriteria Harga
-        $bobotRating = 0.20; // ← GANTI dengan bobot AHP kriteria Rating
-        // =========================================================
+
+        $bobotKategori = 0.43;
+        $bobotHarga = 0.37;
+        $bobotRating = 0.20;
 
         $current = $this->service;
 
