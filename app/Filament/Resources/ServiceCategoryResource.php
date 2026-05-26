@@ -27,7 +27,8 @@ class ServiceCategoryResource extends Resource
                 ->required()
                 ->maxLength(100)
                 ->live(onBlur: true)
-                ->afterStateUpdated(fn($state, Forms\Set $set) =>
+                ->afterStateUpdated(
+                    fn($state, Forms\Set $set) =>
                     $set('slug', Str::slug($state))
                 ),
 
@@ -40,8 +41,8 @@ class ServiceCategoryResource extends Resource
 
             Forms\Components\TextInput::make('icon')
                 ->label('Icon (Heroicon name)')
-                ->placeholder('heroicon-o-star')
-                ->helperText('Contoh: heroicon-o-map, heroicon-o-camera'),
+                ->placeholder('')
+                ->helperText(''),
 
             Forms\Components\Textarea::make('description')
                 ->label('Deskripsi')
@@ -84,9 +85,9 @@ class ServiceCategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListServiceCategories::route('/'),
+            'index' => Pages\ListServiceCategories::route('/'),
             'create' => Pages\CreateServiceCategory::route('/create'),
-            'edit'   => Pages\EditServiceCategory::route('/{record}/edit'),
+            'edit' => Pages\EditServiceCategory::route('/{record}/edit'),
         ];
     }
 
