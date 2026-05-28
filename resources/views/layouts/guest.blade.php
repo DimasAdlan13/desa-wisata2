@@ -16,8 +16,8 @@
         <!-- Bagian Kiri (Hanya muncul di md ke atas) -->
         <div class="hidden md:flex md:w-1/2 bg-teal-900 relative items-center justify-center">
             <!-- Background Image -->
-            <img src="{{ asset('images/wisata_pulau_pramuka_e4ddfe0849.webp') }}"
-                alt="Island View" class="absolute inset-0 w-full h-full object-cover opacity-40">
+            <img src="{{ asset('images/wisata_pulau_pramuka_e4ddfe0849.webp') }}" alt="Island View"
+                class="absolute inset-0 w-full h-full object-cover opacity-40">
 
             <!-- Overlay Content -->
             <div class="relative z-10 px-12 text-white">
