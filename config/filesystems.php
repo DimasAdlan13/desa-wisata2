@@ -38,7 +38,6 @@ return [
 
         'public' => [
             'driver' => 'local',
-            // Ubah baris 'root' di bawah ini:
             'root' => env('FILESYSTEM_PUBLIC_ROOT', storage_path('app/public')),
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
