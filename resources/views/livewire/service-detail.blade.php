@@ -118,7 +118,31 @@
                             <span class="text-xl">📞</span>
                             <div>
                                 <p class="text-sm text-gray-500">Kontak Pengelola</p>
-                                <p class="font-semibold">{{ $service->contact_person ?? '-' }}</p>
+                                @php
+                                    $contactRaw = $service->contact_person ?? '-';
+                                    $parts = explode('|', $contactRaw);
+                                    $contactName = trim($parts[0]);
+                                    $contactPhone = isset($parts[1]) ? trim($parts[1]) : null;
+                                    $waNumber = null;
+                                    if ($contactPhone) {
+                                        $digits = preg_replace('/[^0-9]/', '', $contactPhone);
+                                        $waNumber = str_starts_with($digits, '0')
+                                            ? '62' . substr($digits, 1)
+                                            : $digits;
+                                    }
+                                @endphp
+                                <p class="font-semibold">
+                                    {{ $contactName }}
+                                    @if($contactPhone && $waNumber)
+                                        <span class="text-gray-400 mx-1">|</span>
+                                        <a href="https://wa.me/{{ $waNumber }}"
+                                            target="_blank"
+                                            title="Chat via WhatsApp"
+                                            class="font-semibold hover:underline transition-colors">
+                                            {{ $contactPhone }}
+                                        </a>
+                                    @endif
+                                </p>
                             </div>
                         </div>
                         @if($service->user)
