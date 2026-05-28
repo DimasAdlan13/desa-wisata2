@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Platform booking layanan wisata Pulau Pramuka">
     <link rel="icon" type="image/webp" href="{{ asset('images/logo.webp') }}">
-    <title>{{ config('app.name') }} - {{ $title ?? 'Desa Wisata' }}</title>
+    <title>Desa Wisata Pulau Pramuka - {{ $title ?? 'Beranda' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <style>
