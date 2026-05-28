@@ -38,6 +38,6 @@ class Homepage extends Component
         ];
 
         return view('livewire.homepage', compact('featuredServices', 'categories', 'latestContents', 'infoWisata', 'stats'))
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => 'Beranda']);
     }
 }

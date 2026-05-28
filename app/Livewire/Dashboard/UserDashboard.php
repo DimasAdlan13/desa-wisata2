@@ -35,6 +35,6 @@ class UserDashboard extends Component
             ->paginate(5, pageName: 'historyPage');
 
         return view('livewire.dashboard.user-dashboard', compact('activeBookings', 'historyBookings'))
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => 'Dashboard']);
     }
 }

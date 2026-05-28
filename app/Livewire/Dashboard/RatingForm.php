@@ -60,6 +60,6 @@ class RatingForm extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.rating-form')->layout('layouts.app');
+        return view('livewire.dashboard.rating-form')->layout('layouts.app', ['title' => 'Beri Ulasan']);
     }
 }

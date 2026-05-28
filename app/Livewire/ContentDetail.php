@@ -17,6 +17,6 @@ class ContentDetail extends Component
     public function render()
     {
         return view('livewire.content-detail')
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => $this->content->title ?? 'Detail Artikel']);
     }
 }

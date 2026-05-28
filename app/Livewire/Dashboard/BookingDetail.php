@@ -35,6 +35,6 @@ class BookingDetail extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.booking-detail')->layout('layouts.app');
+        return view('livewire.dashboard.booking-detail')->layout('layouts.app', ['title' => 'Detail Pemesanan']);
     }
 }

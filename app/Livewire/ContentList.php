@@ -25,6 +25,6 @@ class ContentList extends Component
             ->paginate(9);
 
         return view('livewire.content-list', compact('contents'))
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => 'Artikel & Info']);
     }
 }

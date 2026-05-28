@@ -118,6 +118,6 @@ class ServiceDetail extends Component
         $similarServices = $this->getSimilarServices();
 
         return view('livewire.service-detail', compact('availableQuota', 'ratings', 'avgRating', 'similarServices'))
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => $this->service->name ?? 'Detail Layanan']);
     }
 }

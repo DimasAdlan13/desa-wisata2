@@ -46,6 +46,6 @@ class ServiceCatalog extends Component
         $categories = ServiceCategory::active()->get();
 
         return view('livewire.service-catalog', compact('services', 'categories'))
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => 'Layanan Wisata']);
     }
 }

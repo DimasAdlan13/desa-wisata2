@@ -143,6 +143,6 @@ class BookingForm extends Component
     public function render()
     {
         return view('livewire.booking-form')
-            ->layout('layouts.app');
+            ->layout('layouts.app', ['title' => 'Pemesanan']);
     }
 }
