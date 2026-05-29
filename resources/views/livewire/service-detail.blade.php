@@ -280,6 +280,13 @@
                                     class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm text-teal-700 text-[10px] sm:text-xs font-bold px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-sm">
                                     {{ $similar->category->name }}
                                 </span>
+
+                                {{-- Badge Skor SAW — menggunakan inline style agar tidak perlu npm run build --}}
+                                @if(isset($similar->similarity_score))
+                                    <span style="position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.9); backdrop-filter:blur(4px); color:#0f766e; font-size:10px; font-weight:700; padding:2px 8px; border-radius:9999px; box-shadow:0 1px 2px rgba(0,0,0,0.1); z-index:10; white-space:nowrap;">
+                                        Skor: {{ number_format($similar->similarity_score, 4) }}
+                                    </span>
+                                @endif
                             </div>
 
                             <!-- Konten Card -->
