@@ -13,7 +13,7 @@ class BookingDetail extends Component
     public function mount(Booking $booking): void
     {
         // Gate: only the owner can view
-        abort_if($booking->user_id !== auth()->id(), 403);
+        abort_if($booking->user_id != auth()->id(), 403);
         $this->booking = $booking->load(['service.primaryPhoto', 'service.user', 'rating']);
     }
 

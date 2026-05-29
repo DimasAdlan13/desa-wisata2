@@ -20,6 +20,8 @@ class Booking extends Model
     ];
 
     protected $casts = [
+        'user_id'             => 'integer',
+        'service_id'          => 'integer',
         'booking_details'     => 'array',
         'booking_date'        => 'date',
         'payment_confirmed_at'=> 'datetime',

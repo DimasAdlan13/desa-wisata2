@@ -19,7 +19,7 @@ class RatingForm extends Component
 
     public function mount(Booking $booking): void
     {
-        abort_if($booking->user_id !== auth()->id(), 403);
+        abort_if($booking->user_id != auth()->id(), 403);
         abort_if(!$booking->isRateable(), 403, 'Booking ini tidak dapat diberi rating.');
 
         $this->booking = $booking->load('service');
