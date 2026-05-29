@@ -135,9 +135,7 @@
                                     {{ $contactName }}
                                     @if($contactPhone && $waNumber)
                                         <span class="text-gray-400 mx-1">|</span>
-                                        <a href="https://wa.me/{{ $waNumber }}"
-                                            target="_blank"
-                                            title="Chat via WhatsApp"
+                                        <a href="https://wa.me/{{ $waNumber }}" target="_blank" title="Chat via WhatsApp"
                                             class="font-semibold hover:underline transition-colors">
                                             {{ $contactPhone }}
                                         </a>
@@ -176,7 +174,7 @@
                     @else
                         <button @click="showLoginModal = true"
                             class="block w-full text-center bg-yellow-400 text-yellow-900 font-bold px-6 py-4 rounded-xl hover:bg-yellow-300 transition-colors shadow-md transform hover:-translate-y-1">
-                            🎫 Pesan Sekarang
+                            Pesan Sekarang
                         </button>
                         <p class="text-center text-xs text-gray-500 mt-4">Belum punya akun? <a
                                 href="{{ route('register') }}" class="text-teal-600 hover:underline">Daftar</a></p>
@@ -306,8 +304,10 @@
                                 <!-- Harga di bagian bawah -->
                                 <div class="mt-auto pt-2 sm:pt-3 border-t border-gray-50 flex items-center justify-between">
                                     <div>
-                                        <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-wide">Mulai dari</p>
-                                        <p class="text-teal-700 font-extrabold text-xs sm:text-sm">{{ $similar->formatted_price }}</p>
+                                        <p class="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-wide">Mulai dari
+                                        </p>
+                                        <p class="text-teal-700 font-extrabold text-xs sm:text-sm">
+                                            {{ $similar->formatted_price }}</p>
                                     </div>
                                     <span
                                         class="hidden sm:inline text-xs bg-teal-50 text-teal-600 group-hover:bg-teal-600 group-hover:text-white font-semibold px-3 py-1.5 rounded-full transition-colors">

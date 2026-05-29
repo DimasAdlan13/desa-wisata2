@@ -167,17 +167,17 @@
                 <a href="{{ route('home') }}" wire:navigate @click="open = false"
                     :class="isActive('/') && currentPath === '/' ? 'text-teal-700 bg-teal-50 font-semibold' : 'text-gray-600'"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-gray-50 transition-all">
-                    <span>🏠</span> Beranda
+                    Beranda
                 </a>
                 <a href="{{ route('layanan.index') }}" wire:navigate @click="open = false"
                     :class="isActive('/layanan') ? 'text-teal-700 bg-teal-50 font-semibold' : 'text-gray-600'"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-gray-50 transition-all">
-                    <span>🌊</span> Layanan Wisata
+                    Layanan Wisata
                 </a>
                 <a href="{{ route('konten.index') }}" wire:navigate @click="open = false"
                     :class="isActive('/konten') ? 'text-teal-700 bg-teal-50 font-semibold' : 'text-gray-600'"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm hover:bg-gray-50 transition-all">
-                    <span>📰</span> Info & Artikel
+                    Info & Artikel
                 </a>
 
                 <!-- Divider -->
@@ -216,7 +216,7 @@
                     </a>
                     <a href="{{ route('register') }}" wire:navigate @click="open = false"
                         class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 transition-all">
-                        🌊 Daftar Gratis Sekarang
+                        Daftar Gratis Sekarang
                     </a>
                 @endauth
             </div>
