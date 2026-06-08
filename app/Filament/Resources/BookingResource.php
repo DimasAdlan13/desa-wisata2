@@ -35,6 +35,9 @@ class BookingResource extends Resource
                 Forms\Components\Placeholder::make('wisatawan_name')
                     ->label('Wisatawan')
                     ->content(fn (?Booking $record) => $record?->user?->name ?? '-'),
+                Forms\Components\Placeholder::make('wisatawan_phone')
+                    ->label('No. HP Wisatawan')
+                    ->content(fn (?Booking $record) => $record?->user?->phone ?? 'Tidak diisi'),
                 Forms\Components\Placeholder::make('service_name')
                     ->label('Layanan')
                     ->content(fn (?Booking $record) => $record?->service?->name ?? '-'),
