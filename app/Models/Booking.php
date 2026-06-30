@@ -14,27 +14,36 @@ class Booking extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'booking_code', 'user_id', 'service_id', 'booking_date', 'pax',
-        'total_price', 'booking_details', 'status', 'rejection_reason',
-        'payment_proof', 'payment_confirmed_at', 'payment_confirmed_by',
+        'booking_code',
+        'user_id',
+        'service_id',
+        'booking_date',
+        'pax',
+        'total_price',
+        'booking_details',
+        'status',
+        'rejection_reason',
+        'payment_proof',
+        'payment_confirmed_at',
+        'payment_confirmed_by',
     ];
 
     protected $casts = [
-        'user_id'             => 'integer',
-        'service_id'          => 'integer',
-        'booking_details'     => 'array',
-        'booking_date'        => 'date',
-        'payment_confirmed_at'=> 'datetime',
-        'total_price'         => 'integer',
-        'pax'                 => 'integer',
+        'user_id' => 'integer',
+        'service_id' => 'integer',
+        'booking_details' => 'array',
+        'booking_date' => 'date',
+        'payment_confirmed_at' => 'datetime',
+        'total_price' => 'integer',
+        'pax' => 'integer',
     ];
 
     // ─── Status Constants ───────────────────────────────────────────
-    const STATUS_PENDING   = 'pending';
+    const STATUS_PENDING = 'pending';
     const STATUS_CONFIRMED = 'confirmed';
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELLED = 'cancelled';
-    const STATUS_REJECTED  = 'rejected';
+    const STATUS_REJECTED = 'rejected';
 
     // ─── Auto-generate booking_code on create ────────────────────────
     // ─── Auto-complete booking setelah booking_date + 1 hari ────────
@@ -126,12 +135,12 @@ class Booking extends Model
     public function getStatusBadgeColorAttribute(): string
     {
         return match ($this->status) {
-            self::STATUS_PENDING   => 'warning',
+            self::STATUS_PENDING => 'warning',
             self::STATUS_CONFIRMED => 'info',
             self::STATUS_COMPLETED => 'success',
             self::STATUS_CANCELLED => 'gray',
-            self::STATUS_REJECTED  => 'danger',
-            default                => 'gray',
+            self::STATUS_REJECTED => 'danger',
+            default => 'gray',
         };
     }
 

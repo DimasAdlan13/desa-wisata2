@@ -62,59 +62,59 @@
                 ===================================================== --}}
                 @if($role === 'wisatawan')
                     <div x-data="{
-                                                    provinces: [],
-                                                    cities: [],
-                                                    selectedProvinceId: '',
-                                                    selectedProvinceName: '',
-                                                    loadingProvince: true,
-                                                    loadingCity: false,
-                                                    init() {
-                                                        fetch('/data/provinces.json')
-                                                            .then(r => r.json())
-                                                            .then(data => {
-                                                                this.provinces = data;
-                                                                this.loadingProvince = false;
-                                                            });
-                                                    },
-                                                    selectProvince(id, name) {
-                                                        this.selectedProvinceId = id;
-                                                        this.selectedProvinceName = name;
-                                                        this.cities = [];
-                                                        this.loadingCity = true;
+                                                                    provinces: [],
+                                                                    cities: [],
+                                                                    selectedProvinceId: '',
+                                                                    selectedProvinceName: '',
+                                                                    loadingProvince: true,
+                                                                    loadingCity: false,
+                                                                    init() {
+                                                                        fetch('/data/provinces.json')
+                                                                            .then(r => r.json())
+                                                                            .then(data => {
+                                                                                this.provinces = data;
+                                                                                this.loadingProvince = false;
+                                                                            });
+                                                                    },
+                                                                    selectProvince(id, name) {
+                                                                        this.selectedProvinceId = id;
+                                                                        this.selectedProvinceName = name;
+                                                                        this.cities = [];
+                                                                        this.loadingCity = true;
 
-                                                        const cacheKey = 'regencies_' + id;
-                                                        const cached = localStorage.getItem(cacheKey);
-                                                        if (cached) {
-                                                            this.cities = JSON.parse(cached);
-                                                            this.loadingCity = false;
-                                                        } else {
-                                                            // Fetch ke proxy Laravel kita sendiri (bukan emsifa langsung)
-                                                            // → Tidak ada CORS issue, server yang ambil data dari emsifa
-                                                            fetch('/api/wilayah/regencies/' + id)
-                                                                .then(r => {
-                                                                    if (!r.ok) throw new Error('HTTP ' + r.status);
-                                                                    return r.json();
-                                                                })
-                                                                .then(data => {
-                                                                    localStorage.setItem(cacheKey, JSON.stringify(data));
-                                                                    this.cities = data;
-                                                                    this.loadingCity = false;
-                                                                })
-                                                                .catch(err => {
-                                                                    console.error('Gagal memuat kota:', err.message);
-                                                                    this.loadingCity = false;
-                                                                    this.cities = [];
-                                                                    localStorage.removeItem(cacheKey);
-                                                                    alert('Gagal memuat data kota. Silakan coba pilih provinsi kembali.');
-                                                                });
-                                                        }
-                                                    },
-                                                    selectCity(name) {
-                                                        // Sync province + city ke Livewire sekaligus — render hanya 1x
-                                                        $wire.set('province', this.selectedProvinceName);
-                                                        $wire.set('city', name);
-                                                    }
-                                                }" class="grid grid-cols-1 gap-4">
+                                                                        const cacheKey = 'regencies_' + id;
+                                                                        const cached = localStorage.getItem(cacheKey);
+                                                                        if (cached) {
+                                                                            this.cities = JSON.parse(cached);
+                                                                            this.loadingCity = false;
+                                                                        } else {
+                                                                            // Fetch ke proxy Laravel sendiri (bukan emsifa langsung)
+                                                                            // → Tidak ada CORS issue, server yang ambil data dari emsifa
+                                                                            fetch('/api/wilayah/regencies/' + id)
+                                                                                .then(r => {
+                                                                                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                                                                                    return r.json();
+                                                                                })
+                                                                                .then(data => {
+                                                                                    localStorage.setItem(cacheKey, JSON.stringify(data));
+                                                                                    this.cities = data;
+                                                                                    this.loadingCity = false;
+                                                                                })
+                                                                                .catch(err => {
+                                                                                    console.error('Gagal memuat kota:', err.message);
+                                                                                    this.loadingCity = false;
+                                                                                    this.cities = [];
+                                                                                    localStorage.removeItem(cacheKey);
+                                                                                    alert('Gagal memuat data kota. Silakan coba pilih provinsi kembali.');
+                                                                                });
+                                                                        }
+                                                                    },
+                                                                    selectCity(name) {
+                                                                        // Sync province + city ke Livewire sekaligus — render hanya 1x
+                                                                        $wire.set('province', this.selectedProvinceName);
+                                                                        $wire.set('city', name);
+                                                                    }
+                                                                }" class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Provinsi Asal <span class="text-red-500">*</span>

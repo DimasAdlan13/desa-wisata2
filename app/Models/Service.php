@@ -14,18 +14,31 @@ class Service extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'category_id', 'name', 'slug', 'description',
-        'price', 'pricing_type', 'unit_name', 'quota_per_day', 'location', 'contact_person',
-        'form_schema', 'is_approved', 'approved_by', 'approved_at', 'is_active',
+        'user_id',
+        'category_id',
+        'name',
+        'slug',
+        'description',
+        'price',
+        'pricing_type',
+        'unit_name',
+        'quota_per_day',
+        'location',
+        'contact_person',
+        'form_schema',
+        'is_approved',
+        'approved_by',
+        'approved_at',
+        'is_active',
     ];
 
     protected $casts = [
-        'form_schema'  => 'array',
-        'is_approved'  => 'boolean',
-        'is_active'    => 'boolean',
-        'approved_at'  => 'datetime',
-        'price'        => 'integer',
-        'quota_per_day'=> 'integer',
+        'form_schema' => 'array',
+        'is_approved' => 'boolean',
+        'is_active' => 'boolean',
+        'approved_at' => 'datetime',
+        'price' => 'integer',
+        'quota_per_day' => 'integer',
     ];
 
     // Auto-generate slug from name

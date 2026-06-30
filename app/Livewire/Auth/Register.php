@@ -9,14 +9,14 @@ use Livewire\Component;
 
 class Register extends Component
 {
-    public string $name             = '';
-    public string $email            = '';
-    public string $phone            = '';
-    public string $password         = '';
-    public string $passwordConfirm  = '';
-    public string $role             = 'wisatawan';
-    public string $province         = '';
-    public string $city             = '';
+    public string $name = '';
+    public string $email = '';
+    public string $phone = '';
+    public string $password = '';
+    public string $passwordConfirm = '';
+    public string $role = 'wisatawan';
+    public string $province = '';
+    public string $city = '';
 
     public function mount(): void
     {
@@ -28,9 +28,9 @@ class Register extends Component
     }
 
     // Business fields (admin_layanan)
-    public string $businessName     = '';
-    public string $businessAddress  = '';
-    public string $businessDesc     = '';
+    public string $businessName = '';
+    public string $businessAddress = '';
+    public string $businessDesc = '';
 
     public int $step = 1;
 
@@ -48,15 +48,15 @@ class Register extends Component
         \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         $rules = [
-            'name'  => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'role'  => 'required|in:wisatawan,admin_layanan',
+            'role' => 'required|in:wisatawan,admin_layanan',
         ];
 
         if ($this->role === 'wisatawan') {
             $rules['province'] = 'required|string|max:100';
-            $rules['city']     = 'required|string|max:100';
+            $rules['city'] = 'required|string|max:100';
         }
 
         $this->validate($rules);
@@ -71,20 +71,20 @@ class Register extends Component
     protected function rules(): array
     {
         $rules = [
-            'name'            => 'required|string|max:100',
-            'email'           => 'required|email|unique:users,email',
-            'phone'           => 'nullable|string|max:20',
-            'password'        => 'required|min:8|same:passwordConfirm',
-            'role'            => 'required|in:wisatawan,admin_layanan',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'password' => 'required|min:8|same:passwordConfirm',
+            'role' => 'required|in:wisatawan,admin_layanan',
         ];
 
         if ($this->role === 'wisatawan') {
             $rules['province'] = 'required|string|max:100';
-            $rules['city']     = 'required|string|max:100';
+            $rules['city'] = 'required|string|max:100';
         }
 
         if ($this->role === 'admin_layanan') {
-            $rules['businessName']    = 'required|string|max:100';
+            $rules['businessName'] = 'required|string|max:100';
             $rules['businessAddress'] = 'required|string|max:255';
         }
 
@@ -108,15 +108,15 @@ class Register extends Component
         \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         $user = User::create([
-            'name'                 => $this->name,
-            'email'                => $this->email,
-            'phone'                => $this->phone,
-            'password'             => $this->password,
-            'role'                 => $this->role,
-            'province'             => $this->province ?: null,
-            'city'                 => $this->city ?: null,
-            'business_name'        => $this->businessName ?: null,
-            'business_address'     => $this->businessAddress ?: null,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'password' => $this->password,
+            'role' => $this->role,
+            'province' => $this->province ?: null,
+            'city' => $this->city ?: null,
+            'business_name' => $this->businessName ?: null,
+            'business_address' => $this->businessAddress ?: null,
             'business_description' => $this->businessDesc ?: null,
         ]);
 

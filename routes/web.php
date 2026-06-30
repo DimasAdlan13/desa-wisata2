@@ -11,7 +11,6 @@ Route::get('/layanan/{slug}', \App\Livewire\ServiceDetail::class)->name('layanan
 Route::get('/konten/{type?}', \App\Livewire\ContentList::class)->name('konten.index');
 Route::get('/konten/artikel/{slug}', \App\Livewire\ContentDetail::class)->name('konten.show');
 
-// ─── Wilayah Proxy (CORS-safe, server-cached) ────────────────────────────────
 // Browser fetch ke sini, bukan langsung ke emsifa.github.io
 Route::get('/api/wilayah/regencies/{provinceId}', function (string $provinceId) {
     // Validasi: hanya angka, max 2 digit (ID provinsi BPS)
@@ -44,6 +43,8 @@ Route::get('/api/wilayah/regencies/{provinceId}', function (string $provinceId) 
 Route::middleware('guest')->group(function () {
     Route::get('/login', \App\Livewire\Auth\Login::class)->name('login');
     Route::get('/register', \App\Livewire\Auth\Register::class)->name('register');
+    Route::get('/forget-password', \App\Livewire\Auth\ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)->name('password.reset');
 });
 
 Route::post('/logout', function () {
