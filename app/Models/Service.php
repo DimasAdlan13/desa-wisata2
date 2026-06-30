@@ -48,6 +48,14 @@ class Service extends Model
             if (empty($service->slug)) {
                 $service->slug = Str::slug($service->name) . '-' . Str::random(5);
             }
+
+            // Jika yang membuat adalah Super Admin, langsung setujui layanannya
+            $currentUser = auth()->user();
+            if ($currentUser && $currentUser->isSuperAdmin()) {
+                $service->is_approved = true;
+                $service->approved_by = $currentUser->id;
+                $service->approved_at = now();
+            }
         });
     }
 

@@ -28,6 +28,8 @@ class ForgotPassword extends Component
         if ($status === Password::RESET_LINK_SENT) {
             $this->sent = true;
             $this->email = '';
+        } elseif ($status === Password::RESET_THROTTLED) {
+            $this->addError('email', 'Terlalu banyak percobaan. Silakan tunggu beberapa saat sebelum mencoba lagi.');
         } else {
             $this->addError('email', 'Email tidak ditemukan dalam sistem kami.');
         }

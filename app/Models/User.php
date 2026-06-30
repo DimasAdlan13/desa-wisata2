@@ -40,6 +40,25 @@ class User extends Authenticatable implements FilamentUser
         'approved_at'       => 'datetime',
     ];
 
+    // ─── Events ────────────────────────────────────────────────────
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            $currentUser = auth()->user();
+            
+            // 1. Jika yang membuat akun adalah Super Admin dari panel, langsung setujui apapun rolenya
+            if ($currentUser && $currentUser->isSuperAdmin()) {
+                $user->is_approved = true;
+                $user->approved_by = $currentUser->id;
+                $user->approved_at = now();
+            } 
+            // 2. Jika bukan dibuat Super Admin (misal dari form register), Wisatawan & Super Admin tetap otomatis disetujui
+            elseif (in_array($user->role, [self::ROLE_SUPER_ADMIN, self::ROLE_WISATAWAN])) {
+                $user->is_approved = true;
+            }
+        });
+    }
+
     // ─── Role Helpers ──────────────────────────────────────────────
     public function isSuperAdmin(): bool
     {
