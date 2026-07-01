@@ -1,6 +1,6 @@
 # Sistem Informasi Pemesanan Desa Wisata Pulau Pramuka
 
-Sistem informasi berbasis web untuk pengelolaan pemesanan layanan wisata di Kepulauan Seribu. Dibangun sebagai tugas akhir (skripsi) dengan mengimplementasikan algoritma rekomendasi hybrid (CBF + AHP + SAW).
+Sistem informasi berbasis web untuk pengelolaan pemesanan layanan wisata di pulau pramuka Kepulauan Seribu. Dibangun sebagai tugas akhir (skripsi) dengan mengimplementasikan algoritma rekomendasi content based filtering.
 
 **URL Production:** https://wisata-pulauseribu.com
 
@@ -46,31 +46,9 @@ Sistem informasi berbasis web untuk pengelolaan pemesanan layanan wisata di Kepu
 
 | Role | Cara Mendapat | Perlu Approval | Akses Panel Admin |
 |------|--------------|----------------|-------------------|
-| `wisatawan` | Register publik | ❌ Langsung aktif | ❌ |
-| `admin_layanan` | Register sebagai Mitra | ✅ Super Admin | ✅ (jika disetujui) |
-| `super_admin` | Dibuat via Artisan/Seeder | ❌ | ✅ Penuh |
-
----
-
-## Algoritma Rekomendasi
-
-Diimplementasikan di `App\Livewire\ServiceDetail.php` — fungsi `getSimilarServices()`.
-
-**Hybrid: Content-Based Filtering + AHP + SAW**
-
-1. **CBF** — Seleksi semua kandidat layanan yang aktif & disetujui
-2. **AHP** — Bobot tiap kriteria dari hasil kuesioner:
-   - Kategori: `0.43`
-   - Harga: `0.37`
-   - Rating: `0.20`
-3. **SAW** — Hitung skor tiap kandidat:
-   ```
-   Skor = (0.43 × nilaiKategori) + (0.37 × nilaiHarga) + (0.20 × nilaiRating)
-   ```
-   - Kategori: binary (1 = sama, 0 = beda)
-   - Harga: Min-Max Scaling → `1 - |normCandidate - normCurrent|`
-   - Rating: `avgRating / 5`
-4. Diurutkan descending, diambil 6 teratas
+| `wisatawan` | Register publik | ❌ | ❌ |
+| `admin_layanan` | Register sebagai Mitra | ✅ | ✅ |
+| `super_admin` | Dibuat via panel admin | ❌ | ✅ |
 
 ---
 
@@ -86,7 +64,7 @@ Kode booking digenerate otomatis: `DW-YYYYMMDD-00001`
 
 ---
 
-## Struktur Folder Penting
+## Struktur Folder
 
 ```
 app/
@@ -165,48 +143,31 @@ npm run dev
 php artisan serve
 ```
 
-### Akun Default (Seeder)
-
-| Role | Email | Password |
-|------|-------|----------|
-| Super Admin | superadmin@wisata.com | password |
-
 ---
 
-## Konvensi Kode
-
-- **Livewire Component:** Tidak menggunakan Controller terpisah. Logic langsung di class PHP komponen.
-- **Alpine.js:** Interaksi UI ditulis inline di Blade dengan atribut `x-data`, `x-show`, `@click`.
-- **Filament:** Semua halaman admin adalah Resource Filament, bukan controller biasa.
-- **Soft Deletes:** Model `User`, `Service`, `Booking` menggunakan `SoftDeletes` untuk menjaga integritas data historis.
-- **No jQuery:** Gunakan Alpine.js untuk semua manipulasi DOM ringan.
-
----
 
 ## Fitur Utama
 
 - ✅ Katalog layanan wisata dengan filter kategori
-- ✅ Sistem rekomendasi hybrid (CBF + AHP + SAW)
-- ✅ Pemesanan dengan pengecekan kuota harian real-time
+- ✅ Sistem rekomendasi layanan (Content-Based Filtering)
+- ✅ Pemesanan dengan pengecekan kuota harian
 - ✅ Dynamic form schema per layanan (pertanyaan kustom mitra)
 - ✅ Panel admin terpisah per role (Super Admin & Admin Layanan)
 - ✅ Status booking otomatis via Laravel Model Event
+- ✅ Notifikasi email (pendaftaran mitra, booking masuk, perubahan status, approval)
+- ✅ Forgot password via email untuk semua role
+- ✅ Rating & ulasan layanan
 - ✅ Rate limiting anti-spam pada form booking
 - ✅ Proxy API wilayah Indonesia dengan cache 24 jam
-- ✅ Lazy loading gambar untuk optimasi performa
 - ✅ Responsive design (mobile-first)
 
 ---
 
 ## Pengujian Performa
 
-Script pengujian non-fungsional tersedia terpisah di:
-`C:\Users\ACER\Documents\selenium-wisata-test\uji_performa.py`
-
 - **Alat:** Python + Selenium 4
 - **Simulasi Jaringan:** Slow 4G (1.5 Mbps, latency 150ms)
-- **Cache:** Dinonaktifkan via CDP
-- **Target:** < 5 detik per halaman (sesuai NFR)
+- **Target:** < 5 detik per halaman
 - **Pengulangan:** 10x per halaman
 
 ---
